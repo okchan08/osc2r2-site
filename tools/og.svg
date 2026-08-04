@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!--
+    Source for site/og.png, the Open Graph card. Not published itself — link
+    previews need a raster, and no consumer honours an SVG og:image.
+
+        rsvg-convert -w 1200 -h 630 tools/og.svg -o site/og.png
+
+    This is the one generated file in the repo, so it is checked in rather than
+    built in CI: the deploy stays a plain upload of site/.
+
+    Colours are the light-scheme tokens from site/style.css, hardcoded because a
+    social card has no prefers-color-scheme to respond to. Fonts are named
+    explicitly for the same reason — the renderer has no browser font stack, so
+    ui-sans-serif would fall back to something arbitrary. Text is laid out by
+    hand: the copy column is x 80–640 and the illustration x 679–1141, and they
+    must not meet. Re-check the render after any text change.
+  -->
+  <rect width="1200" height="630" fill="#fbfaf8"/>
+
+  <!-- brand mark + wordmark, top left -->
+  <g transform="translate(80 66) scale(1.4)">
+    <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="#b45309" stroke-width="8" stroke-linecap="round" opacity=".18"/>
+    <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="#b45309" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4" opacity=".5"/>
+    <circle cx="14.9" cy="9.3" r="3" fill="#b45309"/>
+  </g>
+  <text x="132" y="98" fill="#1c1a17" font-size="32" font-weight="bold" letter-spacing="-0.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">osc2r2</text>
+
+  <!-- copy column: x 80 → 640 -->
+  <text x="80" y="262" fill="#b45309" font-size="18" font-weight="bold" letter-spacing="1.6" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">ASAM OPENSCENARIO 2.0 · ASAM OPENDRIVE</text>
+
+  <text x="80" y="332" fill="#1c1a17" font-size="48" font-weight="bold" letter-spacing="-1.1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">Write driving scenarios.</text>
+  <text x="80" y="390" fill="#1c1a17" font-size="48" font-weight="bold" letter-spacing="-1.1" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">Watch them run.</text>
+
+  <text x="80" y="456" fill="#57524a" font-size="23" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">A language server, a deterministic runner,</text>
+  <text x="80" y="490" fill="#57524a" font-size="23" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">and a 3D viewer for OpenSCENARIO 2.0.</text>
+
+  <!-- hero illustration, right column: x 679 → 1141 -->
+  <g transform="translate(700 165) scale(1.05)">
+    <path d="M-20 250 C 90 250, 150 130, 420 96 L 420 156 C 160 190, 110 300, -20 300 Z" fill="#ded8ce"/>
+    <path d="M-20 275 C 100 275, 140 168, 420 126" fill="none" stroke="#fbfaf8" stroke-width="2" stroke-dasharray="14 12" opacity=".85"/>
+    <g transform="translate(268 118) rotate(-9)">
+      <rect x="-19" y="-9" width="38" height="18" rx="5" fill="#b45309"/>
+      <rect x="-8" y="-6" width="15" height="12" rx="3" fill="#f2efea"/>
+    </g>
+    <g transform="translate(150 178) rotate(-24)">
+      <rect x="-19" y="-9" width="38" height="18" rx="5" fill="#3f6f7d"/>
+      <rect x="-8" y="-6" width="15" height="12" rx="3" fill="#f2efea"/>
+    </g>
+    <g stroke="#b45309" stroke-width="1.5" fill="none" opacity=".9">
+      <path d="M168 168 L250 128" stroke-dasharray="4 4"/>
+      <circle cx="168" cy="168" r="2.5" fill="#b45309" stroke="none"/>
+      <circle cx="250" cy="128" r="2.5" fill="#b45309" stroke="none"/>
+    </g>
+    <text x="186" y="136" fill="#b45309" font-size="13" font-family="Courier New, Courier, monospace">25m</text>
+  </g>
+
+  <rect x="0" y="618" width="1200" height="12" fill="#b45309"/>
+</svg>

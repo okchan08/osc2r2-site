@@ -1,0 +1,599 @@
+/* osc2r2 landing page
+ *
+ * Hand-written CSS, no build step and no external requests: the whole site is
+ * index.html + this file + favicon.svg, which is what makes the deploy workflow
+ * a plain upload. Keep it that way — a font or script from a CDN would add a
+ * third-party dependency to a page that does not need one.
+ *
+ * Both colour schemes are defined below. The page follows the visitor's OS
+ * setting; there is no toggle, so every colour must be readable in both.
+ */
+
+/* ─────────────────────────────── tokens ─────────────────────────────── */
+
+:root {
+  color-scheme: light dark;
+
+  --bg:          #fbfaf8;
+  --bg-alt:      #f2efea;
+  --surface:     #ffffff;
+  --border:      #e2ddd4;
+  --border-firm: #cfc8bb;
+
+  --text:        #1c1a17;
+  --text-soft:   #57524a;
+  /* Dark enough to clear 4.5:1 on --bg. This token carries real prose
+   * (.rm-foot) and the roadmap tags, not just hairlines, so it cannot be
+   * treated as a decorative grey. */
+  --text-faint:  #6f685e;
+
+  --accent:      #b45309;
+  --accent-soft: #fef3e2;
+  --accent-line: #e8a44c;
+
+  --code-bg:     #211f1c;
+  --code-text:   #e8e3da;
+  --code-k:      #e8a44c;   /* keywords  */
+  --code-ty:     #8ec7d6;   /* types     */
+  --code-fn:     #d9c98a;   /* calls     */
+  --code-n:      #a9cf94;   /* literals  */
+  --code-bar:    #2c2926;
+
+  /* hero illustration */
+  --road-a:      #ded8ce;
+  --road-b:      #cfc8bb;
+  --road-line:   #fbfaf8;
+  --car-a:       #b45309;
+  --car-b:       #3f6f7d;
+  --car-glass:   #f2efea;
+
+  --radius:      12px;
+  --wrap:        1120px;
+
+  /* The sticky header's height (min-height + its bottom border). Anchor targets
+   * subtract it via scroll-margin-top; without that the nav scrolls a heading
+   * to y=0, which is underneath the header. */
+  --header-h:    63px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:          #161513;
+    --bg-alt:      #1e1c1a;
+    --surface:     #211f1c;
+    --border:      #322f2b;
+    --border-firm: #45413b;
+
+    --text:        #f0ece5;
+    --text-soft:   #b3aba1;
+    /* Lifted from the light-mode value's mirror so it also clears 4.5:1 against
+     * --surface, which is lighter than --bg and is where the tags sit. */
+    --text-faint:  #9a9186;
+
+    --accent:      #f0a955;
+    --accent-soft: #2b2114;
+    --accent-line: #a5702c;
+
+    --code-bg:     #100f0e;
+    --code-bar:    #1c1a18;
+
+    --road-a:      #33302c;
+    --road-b:      #26241f;
+    --road-line:   #6a635a;
+    --car-a:       #f0a955;
+    --car-b:       #6aa8ba;
+    --car-glass:   #161513;
+  }
+}
+
+/* ─────────────────────────────── base ───────────────────────────────── */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* 106.25% of a 16px default = 17px, set on the root rather than on <body> so
+ * that `rem` resolves against the same size the body text is actually rendered
+ * at. With `body { font-size: 17px }` every rem in this file would still be
+ * 16px-based, and the type scale would silently drift from its intent. Kept as
+ * a percentage, not px, so a visitor's own default size still scales it. */
+html { font-size: 106.25%; }
+
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* Every in-page anchor lands under the sticky header without this. */
+:where(#main, .section) {
+  scroll-margin-top: calc(var(--header-h) + 16px);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+               "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3 {
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin: 0;
+  font-weight: 650;
+}
+
+p { margin: 0 0 1em; }
+p:last-child { margin-bottom: 0; }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+
+code, pre {
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas,
+               "Liberation Mono", monospace;
+}
+
+/* Inline code sits inside running prose, so it must not change the line box. */
+code {
+  font-size: 0.88em;
+  background: var(--bg-alt);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.wrap {
+  max-width: var(--wrap);
+  margin-inline: auto;
+  padding-inline: 24px;
+}
+
+.muted  { color: var(--text-soft); }
+.small  { font-size: 0.9rem; }
+
+.skip {
+  position: absolute;
+  left: -9999px;
+}
+.skip:focus {
+  left: 12px;
+  top: 12px;
+  z-index: 10;
+  background: var(--surface);
+  border: 1px solid var(--border-firm);
+  border-radius: 8px;
+  padding: 8px 14px;
+}
+
+/* `pre` is in here because the code block carries tabindex="0" so its horizontal
+ * overflow is keyboard-scrollable; a tab stop with no visible ring is worse than
+ * no tab stop. Its offset is negative so the ring sits inside .code-frame's
+ * rounded corners instead of being clipped by its overflow: hidden. */
+:where(a, button):focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.code-frame pre:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+}
+
+/* ────────────────────────────── header ──────────────────────────────── */
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  min-height: 62px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+.brand-mark { width: 26px; height: 26px; color: var(--accent); flex: none; }
+.brand-name { font-size: 1.08rem; }
+
+.site-nav {
+  display: flex;
+  gap: 26px;
+  font-size: 0.94rem;
+}
+.site-nav a {
+  color: var(--text-soft);
+  text-decoration: none;
+}
+.site-nav a:hover { color: var(--text); }
+
+/* Narrow screens tighten the nav rather than hiding it: dropping the links would
+ * leave scrolling as the only way to reach a section, and a menu button is
+ * machinery this page should not need. */
+@media (max-width: 560px) {
+  .site-nav { gap: 15px; font-size: 0.84rem; }
+  .header-inner { gap: 12px; }
+}
+
+/* Tightening alone is not enough — measured at 320px, the wordmark plus three
+ * labels come to 343px and the whole page scrolls sideways. Retiring the
+ * wordmark buys back more than the ~55px needed; the mark beside it still links
+ * home, so nothing is lost but a repetition of the name in the <title>.
+ *
+ * Moved off-screen rather than `display: none` because the mark is
+ * aria-hidden: hiding the text outright would leave the home link with no
+ * accessible name at all. Same technique as .skip above. */
+@media (max-width: 420px) {
+  .brand-name {
+    position: absolute;
+    left: -9999px;
+  }
+}
+
+/* ─────────────────────────────── hero ───────────────────────────────── */
+
+.hero {
+  padding: clamp(48px, 8vw, 96px) 0 clamp(40px, 6vw, 72px);
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-grid {
+  display: grid;
+  /* The copy column takes the larger share so the h1's two sentences each fit
+   * on one line at its maximum size — the <br> between them is the intended
+   * break, and a column narrow enough to wrap "Write driving scenarios."
+   * produces a ragged third line instead. */
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: clamp(32px, 5vw, 56px);
+  align-items: center;
+}
+
+.eyebrow {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.9em;
+}
+
+.hero h1 {
+  font-size: clamp(2.05rem, 4.4vw, 2.95rem);
+  margin-bottom: 0.5em;
+}
+
+.lede {
+  font-size: clamp(1.02rem, 1.6vw, 1.13rem);
+  color: var(--text-soft);
+  max-width: 34em;
+  margin-bottom: 1.7em;
+}
+
+.cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 1.6em;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 11px 20px;
+  border-radius: 9px;
+  font-size: 0.97rem;
+  font-weight: 560;
+  text-decoration: none;
+  border: 1px solid transparent;
+  transition: transform 0.12s ease, background-color 0.12s ease;
+}
+.btn:hover { transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+  .btn:hover { transform: none; }
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+@media (prefers-color-scheme: dark) {
+  /* The dark accent is a light amber; white text on it fails contrast. */
+  .btn-primary { color: #1a1611; }
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border-firm);
+}
+.btn-ghost:hover { background: var(--bg-alt); }
+
+/* The status chip inside a CTA ("coming soon"). Sized down and set in caps so
+ * it reads as a label on the button rather than part of its name. */
+.btn-note {
+  font-size: 0.76rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.hero-art svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
+@media (max-width: 820px) {
+  .hero-grid { grid-template-columns: minmax(0, 1fr); }
+  .hero-art { order: -1; max-width: 420px; margin-inline: auto; width: 100%; }
+}
+
+/* ───────────────────────────── sections ─────────────────────────────── */
+
+.section {
+  padding: clamp(52px, 8vw, 88px) 0;
+}
+.section-alt {
+  background: var(--bg-alt);
+  border-block: 1px solid var(--border);
+}
+
+.section-title {
+  font-size: clamp(1.6rem, 3.4vw, 2.15rem);
+  margin-bottom: 0.55em;
+}
+
+.section-lede {
+  color: var(--text-soft);
+  max-width: 46em;
+  margin-bottom: 2.4em;
+}
+
+/* ─────────────────────────── feature cards ──────────────────────────── */
+
+/* Two columns, not `auto-fit`: there are four cards, and auto-fit lands on
+ * three at desktop widths, orphaning the fourth on a row of its own. A 2x2
+ * block also matches the heading's claim of four parts. */
+.cards {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+@media (min-width: 720px) {
+  .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 26px 24px;
+}
+
+.card h3 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.12rem;
+  margin-bottom: 0.6em;
+}
+
+.card-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.95rem;
+  line-height: 1;
+}
+
+.card > p {
+  color: var(--text-soft);
+  font-size: 0.96rem;
+  margin-bottom: 1.1em;
+}
+
+.tick {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 0.93rem;
+}
+.tick li {
+  position: relative;
+  padding-left: 22px;
+  margin-bottom: 0.5em;
+  color: var(--text-soft);
+}
+.tick li:last-child { margin-bottom: 0; }
+.tick li::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0.66em;
+  width: 7px;
+  height: 7px;
+  border-radius: 2px;
+  background: var(--accent-line);
+}
+
+/* ───────────────────────── language section ─────────────────────────── */
+
+.lang-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(32px, 5vw, 56px);
+  align-items: center;
+}
+
+.lang-copy p {
+  color: var(--text-soft);
+  max-width: 34em;
+}
+.lang-copy .section-title { color: var(--text); }
+
+/* A grid track defaults to `min-width: auto`, which is the *content's* minimum
+ * — and the code block's minimum is its longest unwrappable line. Without an
+ * explicit zero minimum the track grows past the viewport, the whole page
+ * scrolls sideways, and the prose gets clipped rather than the code scrolling
+ * inside its own frame. Same reason the single-column overrides below use
+ * minmax(0, 1fr) instead of a bare 1fr. */
+.lang-code { min-width: 0; }
+
+@media (max-width: 900px) {
+  .lang-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+/* ───────────────────────────── code block ───────────────────────────── */
+
+.code-frame {
+  background: var(--code-bg);
+  border: 1px solid var(--border-firm);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 14px 34px -22px rgb(0 0 0 / 0.55);
+}
+
+.code-bar {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 10px 14px;
+  background: var(--code-bar);
+  border-bottom: 1px solid rgb(255 255 255 / 0.07);
+}
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 0.16);
+}
+/* 0.55 rather than the 0.42 this started at: composited over --code-bar that
+ * lands around 5.5:1, where 0.42 sat at 3.8:1 and missed 4.5:1. It is a real
+ * filename, small and monospaced, so it needs to be readable and not just
+ * present. */
+.code-name {
+  margin-left: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.78rem;
+  color: rgb(255 255 255 / 0.55);
+}
+
+/* Long scenario lines must scroll inside the frame, never widen the page. */
+.code-frame pre {
+  margin: 0;
+  padding: 20px 22px 24px;
+  overflow-x: auto;
+  font-size: 0.855rem;
+  line-height: 1.72;
+  color: var(--code-text);
+  tab-size: 4;
+}
+.code-frame code {
+  background: none;
+  border: 0;
+  padding: 0;
+  font-size: inherit;
+  color: inherit;
+  white-space: pre;
+}
+
+.code-frame .k  { color: var(--code-k);  font-weight: 600; }
+.code-frame .ty { color: var(--code-ty); }
+.code-frame .fn { color: var(--code-fn); }
+.code-frame .n  { color: var(--code-n); }
+
+/* ─────────────────────────────  roadmap  ────────────────────────────── */
+
+.roadmap {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
+  gap: 20px;
+}
+
+.roadmap > li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-line);
+  border-radius: var(--radius);
+  padding: 24px 24px 22px;
+}
+
+.rm-head {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 0.7em;
+}
+.rm-head h3 { font-size: 1.1rem; }
+
+.tag {
+  font-size: 0.71rem;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid var(--border-firm);
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.tag-soon {
+  background: var(--accent-soft);
+  border-color: var(--accent-line);
+  color: var(--accent);
+}
+
+.roadmap p {
+  color: var(--text-soft);
+  font-size: 0.96rem;
+}
+.rm-foot {
+  margin-top: 1em;
+  font-size: 0.88rem;
+  color: var(--text-faint);
+}
+
+/* ────────────────────────────── footer ──────────────────────────────── */
+
+.site-footer {
+  border-top: 1px solid var(--border);
+  background: var(--bg-alt);
+  padding: 40px 0 48px;
+}
+.footer-inner { display: grid; gap: 6px; }
+.footer-brand {
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+.site-footer .small { max-width: 52em; }

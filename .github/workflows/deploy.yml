@@ -1,0 +1,88 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'site/**'
+      - 'tools/**'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  authorize:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ !github.event.repository.fork }}
+    steps:
+      - name: Check the actor may publish
+        env:
+          ACTOR: ${{ github.actor }}
+          ALLOWED: |
+            okchan08
+        run: |
+          set -euo pipefail
+          if [ -z "${ACTOR}" ]; then
+            echo "::error::no actor on this event; refusing to deploy"
+            exit 1
+          fi
+          if printf '%s\n' "${ALLOWED}" | tr -d '[:blank:]' | grep -qxF -- "${ACTOR}"; then
+            echo "${ACTOR} is allowed to publish."
+          else
+            echo "::error::${ACTOR} is not on the deploy allowlist, so this run will not publish."
+            echo "To grant access: add the username to ALLOWED in .github/workflows/deploy.yml"
+            echo "and as a required reviewer on the github-pages environment. See README.md."
+            exit 1
+          fi
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: ${{ !github.event.repository.fork }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      # Uses only the standard library, so there is nothing to install — the
+      # runner's python3 is enough.
+      - run: python3 tools/check-links.py
+
+  deploy:
+    # Both gates, and they run concurrently: an unauthorised push still gets
+    # told whether its content was valid, and a valid push still gets told it
+    # was unauthorised. Neither answer is worth withholding.
+    needs: [authorize, check]
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # A skipped `needs` already skips this job; the condition is repeated so the
+    # fork guard is visible on the job that does the publishing rather than
+    # resting on how skip propagates.
+    if: ${{ !github.event.repository.fork }}
+    # Scoped to this job rather than the workflow: `check` has no business
+    # holding a token that can publish to Pages.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+
+      - uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+
+      - uses: actions/upload-pages-artifact@56afc609e74202658d3ffba0e8f6dda462b719fa # v3.0.1
+        with:
+          # Only the site directory ships. The README, the workflow, and tools/
+          # stay out of the published tree.
+          path: ./site
+
+      - id: deployment
+        uses: actions/deploy-pages@d6db90164ac5ed86f2b6aed7e0febac5b3c0c03e # v4.0.5
