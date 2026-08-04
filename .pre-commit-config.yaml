@@ -1,0 +1,14 @@
+# Pre commit configuration.
+#
+# Installation:
+#
+#     brew install pre-commit
+#     pre-commit install
+#
+
+repos:
+  # for credential scanning
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks

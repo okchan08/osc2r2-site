@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>osc2r2 — an OpenSCENARIO 2.0 toolchain</title>
+<meta name="description" content="osc2r2 is a toolchain for ASAM OpenSCENARIO 2.0 and OpenDRIVE: a language server for authoring scenarios, a deterministic runner for executing them, and a 3D viewer for watching them play out.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+
+<!-- Browser chrome on mobile. Two entries so it tracks the OS scheme like the
+     rest of the page; the values are --bg from each half of style.css. -->
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
+
+<!--
+  The only absolute URLs in the site. Open Graph requires them — a relative
+  og:image is ignored by every consumer — so these four are the one thing that
+  must be edited when the site moves to a custom domain. Everything else on the
+  page is relative and moves for free. See "URL" in README.md.
+-->
+<link rel="canonical" href="https://okchan08.github.io/osc2r2-site/">
+<meta property="og:url" content="https://okchan08.github.io/osc2r2-site/">
+<meta property="og:title" content="osc2r2 — an OpenSCENARIO 2.0 toolchain">
+<meta property="og:description" content="Author, run, and inspect ASAM OpenSCENARIO 2.0 scenarios on OpenDRIVE maps.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://okchan08.github.io/osc2r2-site/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="osc2r2 — a toolchain for ASAM OpenSCENARIO 2.0 and OpenDRIVE.">
+<meta name="twitter:card" content="summary_large_image">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" opacity=".18"/>
+        <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4" opacity=".5"/>
+        <circle cx="14.9" cy="9.3" r="3" fill="currentColor"/>
+      </svg>
+      <span class="brand-name">osc2r2</span>
+    </a>
+    <nav class="site-nav" aria-label="Sections">
+      <a href="#features">Features</a>
+      <a href="#language">Language</a>
+      <a href="#roadmap">Roadmap</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- ─────────────────────────── hero ─────────────────────────── -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">ASAM OpenSCENARIO 2.0 &middot; ASAM OpenDRIVE</p>
+        <h1>Write driving scenarios.<br>Watch them run.</h1>
+        <p class="lede">
+          osc2r2 is a toolchain for ASAM OpenSCENARIO&nbsp;2.0. It gives you a
+          language server that understands your <code>.osc</code> files while you
+          type, a deterministic runner that executes them on OpenDRIVE road
+          networks, and a 3D viewer to see the result.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#roadmap">
+            VS&nbsp;Code extension
+            <span class="btn-note">coming soon</span>
+          </a>
+          <a class="btn btn-ghost" href="#roadmap">
+            Browser playground
+            <span class="btn-note">in design</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <svg viewBox="0 0 400 300" role="presentation">
+          <defs>
+            <linearGradient id="road" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stop-color="var(--road-a)"/>
+              <stop offset="100%" stop-color="var(--road-b)"/>
+            </linearGradient>
+          </defs>
+          <!-- carriageway -->
+          <path d="M-20 250 C 90 250, 150 130, 420 96 L 420 156 C 160 190, 110 300, -20 300 Z" fill="url(#road)"/>
+          <!-- centre line -->
+          <path d="M-20 275 C 100 275, 140 168, 420 126" fill="none" stroke="var(--road-line)" stroke-width="2" stroke-dasharray="14 12" opacity=".85"/>
+          <!-- lead vehicle -->
+          <g transform="translate(268 118) rotate(-9)">
+            <rect x="-19" y="-9" width="38" height="18" rx="5" fill="var(--car-a)"/>
+            <rect x="-8" y="-6" width="15" height="12" rx="3" fill="var(--car-glass)"/>
+          </g>
+          <!-- following vehicle -->
+          <g transform="translate(150 178) rotate(-24)">
+            <rect x="-19" y="-9" width="38" height="18" rx="5" fill="var(--car-b)"/>
+            <rect x="-8" y="-6" width="15" height="12" rx="3" fill="var(--car-glass)"/>
+          </g>
+          <!-- gap annotation between the two -->
+          <g stroke="var(--accent)" stroke-width="1.5" fill="none" opacity=".9">
+            <path d="M168 168 L250 128" stroke-dasharray="4 4"/>
+            <circle cx="168" cy="168" r="2.5" fill="var(--accent)" stroke="none"/>
+            <circle cx="250" cy="128" r="2.5" fill="var(--accent)" stroke="none"/>
+          </g>
+          <text x="186" y="136" fill="var(--accent)" font-size="13" font-family="ui-monospace, monospace">25m</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────── features ──────────────────────── -->
+  <section id="features" class="section">
+    <div class="wrap">
+      <h2 class="section-title">One toolchain, four parts</h2>
+      <p class="section-lede">
+        Scenario work spans authoring, execution, and inspection. osc2r2 covers
+        all three against the same front-end, so what your editor tells you and
+        what the runner does never drift apart.
+      </p>
+
+      <div class="cards">
+        <article class="card">
+          <h3><span class="card-icon" aria-hidden="true">&#9998;</span> Language server</h3>
+          <p>
+            A full LSP implementation for OpenSCENARIO&nbsp;2.0, so any LSP-capable
+            editor gets real feedback on <code>.osc</code> files.
+          </p>
+          <ul class="tick">
+            <li>Diagnostics from lexing, parsing, and semantic analysis</li>
+            <li>Hover, go-to-definition, and document outline</li>
+            <li>Completion and signature help</li>
+            <li>Find references and rename across the workspace</li>
+            <li>Semantic highlighting</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3><span class="card-icon" aria-hidden="true">&#9654;</span> Scenario runner</h3>
+          <p>
+            A fixed-timestep executor that turns a scenario into motion and
+            reports what happened.
+          </p>
+          <ul class="tick">
+            <li>Deterministic: same input and seed, same result</li>
+            <li>Headless mode with a printable run report — fits in CI</li>
+            <li>Actions, modifiers, and <code>keep</code> constraints</li>
+            <li>Serial and parallel composition with real completion conditions</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3><span class="card-icon" aria-hidden="true">&#9678;</span> OpenDRIVE support</h3>
+          <p>
+            Scenarios run on real road networks, not an abstract plane.
+          </p>
+          <ul class="tick">
+            <li>Geometry: lines, arcs, spirals, and polynomials</li>
+            <li>Elevation, superelevation, and lane height</li>
+            <li>Lanes, lane sections, borders, and offsets</li>
+            <li>Junctions with explicit route selection</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h3><span class="card-icon" aria-hidden="true">&#9635;</span> 3D viewer</h3>
+          <p>
+            See the map and the scenario, not just a log file.
+          </p>
+          <ul class="tick">
+            <li>Render an OpenDRIVE network on its own</li>
+            <li>Watch a scenario play out in the same view</li>
+            <li>Hover a road to identify it</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────── language ──────────────────────── -->
+  <section id="language" class="section section-alt">
+    <div class="wrap lang-grid">
+      <div class="lang-copy">
+        <h2 class="section-title">Say what should happen,<br>not how to compute it</h2>
+        <p>
+          OpenSCENARIO&nbsp;2.0 describes traffic situations declaratively. You
+          state the constraints — a speed, a gap, a lane change, how long a phase
+          lasts — and the runner finds motion that satisfies them.
+        </p>
+        <p>
+          The scenario alongside puts two vehicles on a two-lane road. The lead
+          car holds 30&nbsp;kph for 120&nbsp;m. The follower starts 25&nbsp;m
+          behind it, runs 5&nbsp;kph faster to close the gap, then changes lane
+          after ten seconds. Nothing here computes a trajectory by hand.
+        </p>
+        <p class="muted">
+          osc2r2 reads the ASAM standard library, so scenarios written against the
+          published vocabulary run as-is.
+        </p>
+      </div>
+
+      <div class="lang-code">
+        <div class="code-frame">
+          <div class="code-bar" aria-hidden="true">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="code-name">overtake.osc</span>
+          </div>
+<pre tabindex="0" role="region" aria-label="Example scenario: overtake.osc"><code><span class="k">scenario</span> <span class="fn">main</span>:
+    lead: <span class="ty">vehicle</span>
+    follower: <span class="ty">vehicle</span>
+
+    <span class="k">do</span> <span class="k">parallel</span>:
+        lead.<span class="fn">drive</span>() <span class="k">with</span>:
+            <span class="fn">speed</span>(<span class="n">30kph</span>)
+            <span class="fn">distance</span>(<span class="n">120m</span>)
+
+        <span class="k">serial</span>:
+            follower.<span class="fn">drive</span>() <span class="k">with</span>:
+                <span class="fn">position</span>(<span class="n">25m</span>, behind: lead, at: start)
+                <span class="fn">speed</span>(<span class="n">5kph</span>, faster_than: lead)
+                <span class="k">until</span> <span class="fn">elapsed</span>(<span class="n">10s</span>)
+
+            follower.<span class="fn">drive</span>() <span class="k">with</span>:
+                <span class="fn">speed</span>(<span class="n">5kph</span>, faster_than: lead)
+                <span class="fn">change_lane</span>(side: left)
+                <span class="fn">distance</span>(<span class="n">80m</span>)</code></pre>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────── roadmap ───────────────────────── -->
+  <section id="roadmap" class="section">
+    <div class="wrap">
+      <h2 class="section-title">What&rsquo;s next</h2>
+      <p class="section-lede">
+        The runner and the language server work today. These are the two pieces
+        being built on top of them.
+      </p>
+
+      <ol class="roadmap">
+        <li>
+          <div class="rm-head">
+            <h3>VS&nbsp;Code extension</h3>
+            <span class="tag tag-soon">in progress</span>
+          </div>
+          <p>
+            The language server, packaged so it installs in one click. Syntax
+            highlighting, diagnostics as you type, and navigation across a
+            multi-file scenario library — no local toolchain to set up.
+          </p>
+          <p class="rm-foot">
+            <!-- TODO: swap for the Marketplace listing link at publish time. -->
+            A Marketplace link will appear here once it ships.
+          </p>
+        </li>
+        <li>
+          <div class="rm-head">
+            <h3>Browser playground</h3>
+            <span class="tag">in design</span>
+          </div>
+          <p>
+            Edit a <code>.osc</code> file in the browser, run it against a sample
+            map, and see the result — with nothing installed. Meant for trying the
+            language out, reproducing a scenario in a bug report, and sharing a
+            situation with someone by sending them a link.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-brand">osc2r2</p>
+    <p class="muted small">
+      A toolchain for ASAM OpenSCENARIO&nbsp;2.0 and ASAM OpenDRIVE.
+    </p>
+    <p class="muted small">
+      ASAM, OpenSCENARIO, and OpenDRIVE are trademarks of ASAM&nbsp;e.V.
+      This project is not affiliated with or endorsed by ASAM&nbsp;e.V.
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>
