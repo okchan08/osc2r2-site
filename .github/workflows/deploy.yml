@@ -3,24 +3,17 @@ name: Deploy site
 on:
   push:
     branches: [main]
-    paths:
-      - 'site/**'
-      - 'tools/**'
-      - '.github/workflows/deploy.yml'
+  pull_request:
   workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: pages
-  cancel-in-progress: false
-
 jobs:
   authorize:
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ github.event_name != 'pull_request' && !github.event.repository.fork }}
     steps:
       - name: Check the actor may publish
         env:
@@ -63,7 +56,10 @@ jobs:
     # A skipped `needs` already skips this job; the condition is repeated so the
     # fork guard is visible on the job that does the publishing rather than
     # resting on how skip propagates.
-    if: ${{ !github.event.repository.fork }}
+    if: ${{ github.event_name != 'pull_request' && !github.event.repository.fork }}
+    concurrency:
+      group: pages
+      cancel-in-progress: false
     # Scoped to this job rather than the workflow: `check` has no business
     # holding a token that can publish to Pages.
     permissions:
