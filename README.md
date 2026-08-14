@@ -6,6 +6,15 @@ OpenDRIVE. Published with GitHub Pages.
 This repository holds the website only. The osc2r2 source lives elsewhere and is
 not public.
 
+## Contact
+
+Please use this repository's
+[issues](https://github.com/okchan08/osc2r2-site/issues) as the contact point
+for osc2r2 itself — questions, bug reports, and feature requests, alongside
+issues with the site. Templates for each are in `.github/ISSUE_TEMPLATE/`.
+Anything sensitive should go through a private security advisory rather than a
+public issue.
+
 ## Local preview
 
 Open `site/index.html` in a browser, or serve the directory so relative paths

@@ -583,6 +583,15 @@ code {
   color: var(--text-faint);
 }
 
+/* ────────────────────────────── contact ─────────────────────────────── */
+
+/* The buttons carry the section, so the caveat sits under them at the size of
+   the footer's fine print rather than competing with the lede. */
+.contact-note {
+  margin: 22px 0 0;
+  max-width: 46em;
+}
+
 /* ────────────────────────────── footer ──────────────────────────────── */
 
 .site-footer {

@@ -29,6 +29,11 @@ ALLOWED_ABSOLUTE = {
     "https://okchan08.github.io/osc2r2-site/",
     "https://okchan08.github.io/osc2r2-site/og.png",
     "https://okchan08.github.io/osc2r2-site/favicon.svg",
+    # The contact route. These live on github.com rather than the Pages site, so
+    # unlike the four above they survive a move to a custom domain.
+    "https://github.com/okchan08/osc2r2-site/issues",
+    "https://github.com/okchan08/osc2r2-site/issues/new/choose",
+    "https://github.com/okchan08/osc2r2-site/security/advisories/new",
 }
 
 # Attributes that name another resource, per tag.
