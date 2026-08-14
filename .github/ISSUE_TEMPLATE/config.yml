@@ -1,0 +1,7 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security or credential disclosure
+    url: https://github.com/okchan08/osc2r2-site/security/advisories/new
+    about: >-
+      Report a vulnerability in osc2r2 or anything else sensitive privately,
+      rather than in a public issue.

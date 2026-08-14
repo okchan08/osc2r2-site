@@ -1,0 +1,48 @@
+name: Question about osc2r2
+description: Ask anything about the osc2r2 toolchain — capabilities, availability, use in your project.
+labels: ["osc2r2", "question"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        This is the contact point for **osc2r2**, the toolchain for ASAM
+        OpenSCENARIO 2.0 and OpenDRIVE. Ask here; the source repository is
+        private, so this is the place.
+
+
+        Please do not attach scenario files, maps, or logs that you are not
+        free to publish — issues here are public.
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your question
+      placeholder: >-
+        Does osc2r2 handle OpenSCENARIO 2.0 `modifier` composition, and is
+        there a way to evaluate it against our own scenario set?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: >-
+        What you are trying to achieve, and anything about your setup that
+        matters — simulator, tool versions, the format you work in.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: topic
+    attributes:
+      label: Topic
+      description: Optional, to help route the question.
+      options:
+        - OpenSCENARIO 2.0
+        - OpenDRIVE
+        - Availability, licensing, or evaluation
+        - Integration with another tool
+        - Something else
+    validations:
+      required: false

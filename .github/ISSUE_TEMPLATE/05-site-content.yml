@@ -1,0 +1,38 @@
+name: Website content
+description: Wording, links, or sections on the site need adding, correcting, or removing.
+labels: ["site", "content"]
+body:
+  - type: textarea
+    id: current
+    attributes:
+      label: What the site says now
+      description: Quote the current text, or say "nothing — this is missing".
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed
+    attributes:
+      label: What it should say
+      description: >-
+        The replacement wording, or a sketch of the section you would add.
+    validations:
+      required: true
+
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      placeholder: site/index.html
+    validations:
+      required: true
+
+  - type: textarea
+    id: rationale
+    attributes:
+      label: Why
+      description: >-
+        What makes the current site wrong or incomplete — a spec change, a
+        renamed feature, a dead link, a question that keeps coming up.
+    validations:
+      required: false

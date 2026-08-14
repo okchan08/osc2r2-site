@@ -1,0 +1,58 @@
+name: osc2r2 bug report
+description: osc2r2 crashes, rejects valid input, or produces the wrong result.
+labels: ["osc2r2", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        Issues here are public. Reduce your input to the smallest snippet that
+        still shows the problem, and strip anything confidential — scenario
+        files, maps, and paths often are.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What osc2r2 did, and what you expected instead.
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: osc2r2 version
+      placeholder: 0.4.1, or a build date if you are on a pre-release
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: How to reproduce
+      description: >-
+        The command you ran, and the smallest input that triggers it.
+      render: shell
+      placeholder: |
+        $ osc2r2 check scenario.osc
+        error: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: input
+    attributes:
+      label: Input snippet
+      description: >-
+        The relevant part of the `.osc` or `.xodr` file, cut down as far as it
+        still reproduces.
+      render: text
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: Ubuntu 24.04, x86_64
+    validations:
+      required: false
