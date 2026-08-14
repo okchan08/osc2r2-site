@@ -1,0 +1,39 @@
+name: osc2r2 feature request
+description: Ask for support for a language feature, format, or workflow osc2r2 does not cover yet.
+labels: ["osc2r2", "enhancement"]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What you cannot do today
+      description: The concrete thing osc2r2 does not let you do.
+      placeholder: >-
+        Our scenarios use OpenSCENARIO 2.0 `struct` inheritance, which osc2r2
+        currently rejects, so we cannot run them through the checker at all.
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What you would like it to do
+    validations:
+      required: true
+
+  - type: textarea
+    id: spec
+    attributes:
+      label: Specification reference
+      description: >-
+        The relevant part of the ASAM OpenSCENARIO 2.0 or OpenDRIVE
+        specification, if there is one — section number is enough.
+    validations:
+      required: false
+
+  - type: textarea
+    id: workaround
+    attributes:
+      label: Current workaround
+      description: How you are handling it now, if at all.
+    validations:
+      required: false

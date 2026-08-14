@@ -1,0 +1,57 @@
+name: Website bug
+description: A page on the osc2r2 site is broken, missing, or renders wrongly.
+labels: ["site", "bug"]
+body:
+  - type: markdown
+    attributes:
+      value: >-
+        For the **website**. For osc2r2 itself, use the osc2r2 bug report
+        template instead.
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you saw, and what you expected instead.
+      placeholder: |
+        The "Documentation" link in the footer returns a 404.
+        I expected it to open the docs page.
+    validations:
+      required: true
+
+  - type: input
+    id: page
+    attributes:
+      label: Page
+      description: URL or path of the affected page.
+      placeholder: https://okchan08.github.io/osc2r2-site/ (or site/404.html)
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open the landing page
+        2. Scroll to the footer
+        3. Click "Documentation"
+    validations:
+      required: false
+
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and device
+      description: Browser, version, and whether it was desktop or mobile.
+      placeholder: Firefox 128, macOS desktop, 1440px wide
+    validations:
+      required: false
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: Screenshot
+      description: Drag an image in, if the problem is visual.
+    validations:
+      required: false
