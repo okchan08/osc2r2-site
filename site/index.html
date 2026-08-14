@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>osc2r2 — an OpenSCENARIO 2.0 toolchain</title>
-<meta name="description" content="osc2r2 is a toolchain for ASAM OpenSCENARIO 2.0 and OpenDRIVE: a language server for authoring scenarios, a deterministic runner for executing them, and a 3D viewer for watching them play out.">
+<meta name="description" content="osc2r2 is a toolchain for ASAM OpenSCENARIO 2.0 and OpenDRIVE: a language server for authoring scenarios — available now as a VS Code extension — a deterministic runner for executing them, and a 3D viewer for watching them play out.">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="style.css">
 
@@ -22,7 +22,7 @@
 <link rel="canonical" href="https://okchan08.github.io/osc2r2-site/">
 <meta property="og:url" content="https://okchan08.github.io/osc2r2-site/">
 <meta property="og:title" content="osc2r2 — an OpenSCENARIO 2.0 toolchain">
-<meta property="og:description" content="Author, run, and inspect ASAM OpenSCENARIO 2.0 scenarios on OpenDRIVE maps.">
+<meta property="og:description" content="Author, run, and inspect ASAM OpenSCENARIO 2.0 scenarios on OpenDRIVE maps. The VS Code extension is on the Marketplace.">
 <meta property="og:type" content="website">
 <meta property="og:image" content="https://okchan08.github.io/osc2r2-site/og.png">
 <meta property="og:image:width" content="1200">
@@ -45,9 +45,11 @@
       <span class="brand-name">osc2r2</span>
     </a>
     <nav class="site-nav" aria-label="Sections">
+      <a class="nav-install" href="#install">Install</a>
       <a href="#features">Features</a>
       <a href="#language">Language</a>
       <a href="#roadmap">Roadmap</a>
+      <a href="#contact">Contact</a>
     </nav>
   </div>
 </header>
@@ -67,9 +69,9 @@
           networks, and a 3D viewer to see the result.
         </p>
         <div class="cta-row">
-          <a class="btn btn-primary" href="#roadmap">
+          <a class="btn btn-primary" href="https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2">
             VS&nbsp;Code extension
-            <span class="btn-note">coming soon</span>
+            <span class="btn-note">on the Marketplace</span>
           </a>
           <a class="btn btn-ghost" href="#roadmap">
             Browser playground
@@ -112,6 +114,54 @@
     </div>
   </section>
 
+  <!-- ─────────────────────────── install ──────────────────────── -->
+  <section id="install" class="section section-alt">
+    <div class="wrap install-grid">
+      <div class="install-copy">
+        <p class="eyebrow">Available now</p>
+        <h2 class="section-title">The editor half, in one click</h2>
+        <p>
+          <strong>OpenSCENARIO&nbsp;2.0</strong> packages the language server as a
+          VS&nbsp;Code extension. Install it and <code>.osc</code> files are
+          understood as you type — no local toolchain to build, nothing to
+          configure.
+        </p>
+        <p>
+          It is the same language server described below, so the errors the
+          editor shows you are the errors the rest of osc2r2 sees.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2">
+            Get it on the Marketplace
+          </a>
+          <a class="btn btn-ghost" href="#features">
+            What it understands
+          </a>
+        </div>
+        <p class="muted small">
+          Listed as <em>OpenSCENARIO&nbsp;2.0</em>, extension&nbsp;ID
+          <code>okchan08.openscenario2</code>
+        </p>
+      </div>
+
+      <div class="install-cmd">
+        <div class="code-frame">
+          <div class="code-bar" aria-hidden="true">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            <span class="code-name">Quick Installation</span>
+          </div>
+<pre tabindex="0" role="region" aria-label="Install command for VS Code Quick Open"><code><span class="k">code --install-extension</span> okchan08.openscenario2</code></pre>
+        </div>
+        <p class="muted small install-hint">
+          Copy the command <kbd>&#8984;P</kbd> on macOS or
+          <kbd>Ctrl+P</kbd> elsewhere, paste the line, and press
+          Enter. Or search the Extensions view for
+          <em>OpenSCENARIO&nbsp;2.0</em>.
+        </p>
+      </div>
+    </div>
+  </section>
+
   <!-- ────────────────────────── features ──────────────────────── -->
   <section id="features" class="section">
     <div class="wrap">
@@ -127,7 +177,8 @@
           <h3><span class="card-icon" aria-hidden="true">&#9998;</span> Language server</h3>
           <p>
             A full LSP implementation for OpenSCENARIO&nbsp;2.0, so any LSP-capable
-            editor gets real feedback on <code>.osc</code> files.
+            editor gets real feedback on <code>.osc</code> files. Packaged for
+            VS&nbsp;Code — <a href="#install">install it here</a>.
           </p>
           <ul class="tick">
             <li>Diagnostics from lexing, parsing, and semantic analysis</li>
@@ -237,26 +288,12 @@
     <div class="wrap">
       <h2 class="section-title">What&rsquo;s next</h2>
       <p class="section-lede">
-        The runner and the language server work today. These are the two pieces
-        being built on top of them.
+        The runner, the language server, and the
+        <a href="#install">VS&nbsp;Code extension</a> work today. This is the
+        piece being built on top of them.
       </p>
 
       <ol class="roadmap">
-        <li>
-          <div class="rm-head">
-            <h3>VS&nbsp;Code extension</h3>
-            <span class="tag tag-soon">in progress</span>
-          </div>
-          <p>
-            The language server, packaged so it installs in one click. Syntax
-            highlighting, diagnostics as you type, and navigation across a
-            multi-file scenario library — no local toolchain to set up.
-          </p>
-          <p class="rm-foot">
-            <!-- TODO: swap for the Marketplace listing link at publish time. -->
-            A Marketplace link will appear here once it ships.
-          </p>
-        </li>
         <li>
           <div class="rm-head">
             <h3>Browser playground</h3>
@@ -273,6 +310,33 @@
     </div>
   </section>
 
+  <!-- ────────────────────────── contact ───────────────────────── -->
+  <section id="contact" class="section section-alt">
+    <div class="wrap">
+      <h2 class="section-title">Questions go to the issue tracker</h2>
+      <p class="section-lede">
+        The osc2r2 source is not public, so the issue tracker on this site&rsquo;s
+        repository is where questions about the toolchain are answered — what it
+        supports, how to use it, and what it should do next. There is a template
+        for each kind.
+      </p>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="https://github.com/okchan08/osc2r2-site/issues/new/choose">
+          Open an issue
+        </a>
+        <a class="btn btn-ghost" href="https://github.com/okchan08/osc2r2-site/issues">
+          Browse open issues
+        </a>
+      </div>
+      <p class="muted small contact-note">
+        Issues are public. Anything you cannot publish — a customer scenario, a
+        map, a security problem — should go through a
+        <a href="https://github.com/okchan08/osc2r2-site/security/advisories/new">private
+        advisory</a> instead.
+      </p>
+    </div>
+  </section>
+
 </main>
 
 <footer class="site-footer">
@@ -280,6 +344,11 @@
     <p class="footer-brand">osc2r2</p>
     <p class="muted small">
       A toolchain for ASAM OpenSCENARIO&nbsp;2.0 and ASAM OpenDRIVE.
+    </p>
+    <p class="small">
+      <a href="https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2">VS&nbsp;Code extension</a>
+      &middot;
+      <a href="https://github.com/okchan08/osc2r2-site/issues">Questions and bug reports</a>
     </p>
     <p class="muted small">
       ASAM, OpenSCENARIO, and OpenDRIVE are trademarks of ASAM&nbsp;e.V.
