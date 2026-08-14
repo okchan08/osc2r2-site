@@ -40,3 +40,14 @@ Deployment is automated in CI. Refer to `.github/workflows/deploy.yml`. The CI i
 ### URL
 
 `https://okchan08.github.io/osc2r2-site/`
+
+## Outbound links
+
+`tools/check-links.py` rejects any absolute URL that is not in its
+`ALLOWED_ABSOLUTE` set, so a new off-site link has to be added there as well as
+to the page. The ones the site currently points at:
+
+- the VS Code extension —
+  <https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2>
+  (`okchan08.openscenario2`, listed as *OpenSCENARIO 2.0*)
+- this repository's issues, new-issue chooser, and private advisory form

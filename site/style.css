@@ -230,6 +230,12 @@ code {
 @media (max-width: 560px) {
   .site-nav { gap: 15px; font-size: 0.84rem; }
   .header-inner { gap: 12px; }
+
+  /* The four labels below are what the widths above were measured against, and
+   * a fifth puts the row back over a 320px viewport. Install is the one link
+   * that can go: it is the first section under the hero, and the hero's own
+   * primary button — on screen at the same time — is the same destination. */
+  .nav-install { display: none; }
 }
 
 /* Tightening alone is not enough — measured at 320px, the wordmark plus three
@@ -354,6 +360,10 @@ code {
 .section {
   padding: clamp(52px, 8vw, 88px) 0;
 }
+/* The hero already draws a rule under itself; when an alt section follows it
+ * directly the two hairlines stack into a 2px band. */
+.hero + .section-alt { border-top: 0; }
+
 .section-alt {
   background: var(--bg-alt);
   border-block: 1px solid var(--border);
@@ -368,6 +378,52 @@ code {
   color: var(--text-soft);
   max-width: 46em;
   margin-bottom: 2.4em;
+}
+
+/* ────────────────────────── install section ─────────────────────────── */
+
+/* Copy on the left, the command to paste on the right — the same two-column
+ * shape as the language section, mirrored so the prose leads. The command
+ * column is the narrower one: it holds a single short line. */
+.install-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(32px, 5vw, 56px);
+  align-items: center;
+}
+
+.install-copy p {
+  color: var(--text-soft);
+  max-width: 34em;
+}
+.install-copy .section-title { margin-bottom: 0.5em; }
+.install-copy strong { color: var(--text); font-weight: 620; }
+.install-copy .cta-row { margin-top: 1.6em; }
+.install-copy .cta-row + .muted { margin: 0; }
+
+/* Same zero-minimum reasoning as .lang-code below: the command must scroll
+ * inside its frame rather than widen the page. */
+.install-cmd { min-width: 0; }
+
+.install-hint {
+  margin: 14px 2px 0;
+  line-height: 1.6;
+}
+
+kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.82em;
+  padding: 1px 6px;
+  border: 1px solid var(--border-firm);
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: var(--surface);
+  color: var(--text-soft);
+  white-space: nowrap;
+}
+
+@media (max-width: 900px) {
+  .install-grid { grid-template-columns: minmax(0, 1fr); }
 }
 
 /* ─────────────────────────── feature cards ──────────────────────────── */
@@ -539,6 +595,12 @@ code {
   gap: 20px;
 }
 
+/* With the extension shipped, one item is left. An auto-fit track stretches a
+ * lone card across the full wrap, where it reads as a banner rather than as an
+ * entry in a list; the cap keeps it card-shaped. Drops away on its own if a
+ * second item is added back. */
+.roadmap:has(> li:only-child) { max-width: 620px; }
+
 .roadmap > li {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -567,6 +629,8 @@ code {
   color: var(--text-faint);
   white-space: nowrap;
 }
+/* Unused while the list holds a single "in design" item; kept because it is the
+ * state that item moves to next, not a leftover from the shipped extension. */
 .tag-soon {
   background: var(--accent-soft);
   border-color: var(--accent-line);
