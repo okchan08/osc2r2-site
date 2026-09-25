@@ -12,10 +12,23 @@ What it verifies, for every .html file under site/:
     GitHub Pages will not;
   * no id is declared twice;
   * every absolute http(s) URL is one of the few that are supposed to exist.
+
+And, for the files search engines read rather than people:
+
+  * robots.txt and sitemap.xml exist and point at SITE_URL;
+  * sitemap.xml lists exactly the pages that are meant to be indexed — every
+    page without <meta name="robots" content="noindex">, and no others;
+  * every indexable page declares the rel=canonical that the sitemap claims
+    for it.
+
+Those three are the ones that go wrong silently: a page added without a sitemap
+entry, or a move to a new domain that updates the HTML and forgets the sitemap,
+breaks nothing a browser can see.
 """
 
 from __future__ import annotations
 
+import re
 import sys
 from html.parser import HTMLParser
 from pathlib import Path
@@ -23,12 +36,17 @@ from urllib.parse import unquote, urldefrag, urlparse
 
 SITE = Path(__file__).resolve().parent.parent / "site"
 
-# Absolute URLs the site is allowed to contain. Keep in step with the "URL"
-# section of README.md.
+# Where the site is published, with the trailing slash. Canonical URLs, the
+# sitemap, and robots.txt all have to agree with this; changing it here is what
+# turns a move to a custom domain into a checked operation rather than a search
+# and replace. Keep in step with the "URL" section of README.md.
+SITE_URL = "https://okchan08.github.io/osc2r2-site/"
+
+# Absolute URLs the site is allowed to contain.
 ALLOWED_ABSOLUTE = {
-    "https://okchan08.github.io/osc2r2-site/",
-    "https://okchan08.github.io/osc2r2-site/og.png",
-    "https://okchan08.github.io/osc2r2-site/favicon.svg",
+    SITE_URL,
+    SITE_URL + "og.png",
+    SITE_URL + "favicon.svg",
     # The VS Code extension listing. Off-site, so it also survives a move.
     "https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2",
     # The contact route. These live on github.com rather than the Pages site, so
@@ -50,9 +68,18 @@ class Refs(HTMLParser):
         self.ids: dict[str, int] = {}
         self.duplicate_ids: list[tuple[str, int]] = []
         self.refs: list[tuple[str, int]] = []
+        self.canonical: str | None = None
+        self.noindex = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         line = self.getpos()[0]
+        attr = {name: (value or "") for name, value in attrs}
+
+        if tag == "link" and "canonical" in attr.get("rel", "").lower().split():
+            self.canonical = attr.get("href", "").strip()
+        elif tag == "meta" and attr.get("name", "").lower() == "robots":
+            self.noindex = "noindex" in attr.get("content", "").lower()
+
         for name, value in attrs:
             if value is None:
                 continue
@@ -89,9 +116,13 @@ def resolve_case_sensitively(path: Path) -> bool:
     return True
 
 
-def check(page: Path) -> list[str]:
+def parse(page: Path) -> Refs:
     parser = Refs()
     parser.feed(page.read_text(encoding="utf-8"))
+    return parser
+
+
+def check(page: Path, parser: Refs) -> list[str]:
     rel = page.relative_to(SITE.parent)
     problems: list[str] = []
 
@@ -152,15 +183,91 @@ def check(page: Path) -> list[str]:
     return problems
 
 
+def page_url(page: Path) -> str:
+    """The public URL of a page under site/, as the sitemap must spell it."""
+    rel = page.relative_to(SITE).as_posix()
+    if rel.endswith("index.html"):
+        # A directory is served by its index.html, and the canonical spelling of
+        # a directory keeps the trailing slash.
+        rel = rel.removesuffix("index.html")
+    return SITE_URL + rel
+
+
+def check_robots() -> list[str]:
+    """robots.txt exists and declares the sitemap at the current SITE_URL."""
+    robots = SITE / "robots.txt"
+    if not robots.exists():
+        return ["site/robots.txt: missing"]
+
+    want = f"Sitemap: {SITE_URL}sitemap.xml"
+    lines = robots.read_text(encoding="utf-8").splitlines()
+    if not any(line.strip() == want for line in lines):
+        return [f'site/robots.txt: no "{want}" line']
+    return []
+
+
+def check_sitemap(parsed: dict[Path, Refs]) -> list[str]:
+    """The sitemap lists every indexable page, and only those.
+
+    Indexable means "does not say noindex". 404.html says it, so it stays out;
+    anything new that does not say it has to be listed.
+    """
+    sitemap = SITE / "sitemap.xml"
+    if not sitemap.exists():
+        return ["site/sitemap.xml: missing"]
+
+    # Read by regex rather than by an XML parser: <loc> is the only element
+    # this cares about, and xml.etree needs pyexpat, which is a C extension a
+    # broken local Python can be missing. The rest of this tool runs anywhere
+    # python3 does, and so should this.
+    text = sitemap.read_text(encoding="utf-8")
+    listed = {m.strip() for m in re.findall(r"<loc>(.*?)</loc>", text, re.S)}
+    if not listed:
+        return ["site/sitemap.xml: no <loc> entries"]
+    expected = {
+        page_url(page) for page, refs in parsed.items() if not refs.noindex
+    }
+
+    problems = [
+        f"site/sitemap.xml: lists {url}, which is not an indexable page"
+        for url in sorted(listed - expected)
+    ]
+    problems += [
+        f"site/sitemap.xml: does not list {url}\n"
+        f"    add it, or mark the page noindex if it is not meant to be found"
+        for url in sorted(expected - listed)
+    ]
+    return problems
+
+
+def check_canonical(page: Path, parser: Refs) -> list[str]:
+    """An indexable page names itself as canonical; a noindex page need not."""
+    if parser.noindex:
+        return []
+
+    rel = page.relative_to(SITE.parent)
+    want = page_url(page)
+    if parser.canonical is None:
+        return [f"{rel}: no <link rel=canonical>; it should be {want}"]
+    if parser.canonical != want:
+        return [f"{rel}: canonical is {parser.canonical}, expected {want}"]
+    return []
+
+
 def main() -> int:
     pages = sorted(SITE.rglob("*.html"))
     if not pages:
         print(f"no HTML found under {SITE}", file=sys.stderr)
         return 1
 
+    parsed = {page: parse(page) for page in pages}
+
     problems: list[str] = []
-    for page in pages:
-        problems.extend(check(page))
+    for page, refs in parsed.items():
+        problems.extend(check(page, refs))
+        problems.extend(check_canonical(page, refs))
+    problems.extend(check_robots())
+    problems.extend(check_sitemap(parsed))
 
     for problem in problems:
         print(problem, file=sys.stderr)
@@ -173,7 +280,7 @@ def main() -> int:
         )
         return 1
 
-    print(f"{count} page(s) checked, no broken references")
+    print(f"{count} page(s) checked, no broken references; sitemap agrees")
     return 0
 
 

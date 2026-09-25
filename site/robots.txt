@@ -1,0 +1,17 @@
+# Served at https://okchan08.github.io/osc2r2-site/robots.txt.
+#
+# Crawlers read robots.txt only from the root of an origin, so while the site
+# lives at a GitHub Pages project path this file is ignored: the rules that
+# actually apply come from https://okchan08.github.io/robots.txt, which 404s —
+# and a missing robots.txt means "crawl everything". Nothing here is needed to
+# get indexed today.
+#
+# It is committed anyway for two reasons: it is already correct the day the
+# site moves to a custom domain, and it records where the sitemap lives. Until
+# that move, the sitemap has to be submitted by hand in Google Search Console.
+# See SEO.md.
+
+User-agent: *
+Disallow:
+
+Sitemap: https://okchan08.github.io/osc2r2-site/sitemap.xml
