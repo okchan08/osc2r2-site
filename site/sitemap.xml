@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  One page, one entry. 404.html is deliberately absent — it carries
+  <meta name="robots" content="noindex">, and tools/check-links.py enforces
+  that the two stay in step.
+
+  No <lastmod>: it would have to be hand-edited on every content change, and a
+  date that drifts out of date is worse than none at all — Google ignores a
+  lastmod it has learned not to trust.
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://okchan08.github.io/osc2r2-site/</loc>
+  </url>
+</urlset>

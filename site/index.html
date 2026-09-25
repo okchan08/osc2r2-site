@@ -13,11 +13,18 @@
 <meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
 
+<!-- Crawling. index/follow is the default; this asks for the larger preview
+     and an unclipped snippet, which are not. -->
+<meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
+
 <!--
-  The only absolute URLs in the site. Open Graph requires them — a relative
-  og:image is ignored by every consumer — so these four are the one thing that
-  must be edited when the site moves to a custom domain. Everything else on the
-  page is relative and moves for free. See "URL" in README.md.
+  The absolute URLs start here. Open Graph requires them — a relative og:image
+  is ignored by every consumer — and so do rel=canonical and the JSON-LD below.
+  They, site/robots.txt, and site/sitemap.xml are the whole of what must be
+  edited when the site moves to a custom domain; everything else on the page is
+  relative and moves for free. tools/check-links.py checks the set against one
+  SITE_URL constant, so a move that misses a file fails CI. See "URL" in
+  README.md.
 -->
 <link rel="canonical" href="https://okchan08.github.io/osc2r2-site/">
 <meta property="og:url" content="https://okchan08.github.io/osc2r2-site/">
@@ -28,7 +35,42 @@
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="osc2r2 — a toolchain for ASAM OpenSCENARIO 2.0 and OpenDRIVE.">
+<meta property="og:site_name" content="osc2r2">
+<meta property="og:locale" content="en">
 <meta name="twitter:card" content="summary_large_image">
+
+<!--
+  Structured data: what this page is, in the vocabulary a search engine parses
+  rather than reads. Two nodes — the site itself, and the one thing you can
+  install today. Kept to claims the page actually makes; no price, no rating,
+  no release date, because nothing here can keep those honest.
+-->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebSite",
+      "@id": "https://okchan08.github.io/osc2r2-site/#website",
+      "url": "https://okchan08.github.io/osc2r2-site/",
+      "name": "osc2r2",
+      "description": "A toolchain for ASAM OpenSCENARIO 2.0 and ASAM OpenDRIVE: a language server for authoring scenarios, a deterministic runner for executing them, and a 3D viewer for watching them play out.",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://okchan08.github.io/osc2r2-site/#vscode-extension",
+      "name": "OpenSCENARIO 2.0",
+      "alternateName": "osc2r2 language server for Visual Studio Code",
+      "description": "The osc2r2 language server packaged as a Visual Studio Code extension: diagnostics, hover, go-to-definition, completion, signature help, find references, rename, and semantic highlighting for ASAM OpenSCENARIO 2.0 .osc files.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "url": "https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2",
+      "mainEntityOfPage": "https://okchan08.github.io/osc2r2-site/"
+    }
+  ]
+}
+</script>
 </head>
 <body>
 
