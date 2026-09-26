@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>osc2r2 — run an OpenSCENARIO 2.0 scenario</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
+    <script type="module" crossorigin src="./assets/index-DslMoRnH.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-ECKi_683.css">
+      <link rel="canonical" href="https://okchan08.github.io/osc2r2-site/app/" />
+  </head>
+  <body>
+    <header>
+      <!-- A run writes the scenario it ran into the URL (`#v=1&map=…&s=…`),
+           which a reload would run again. This is the way back to a blank one: a
+           link to the page itself with no fragment, which the browser navigates
+           to rather than scrolls to, precisely because there is no fragment to
+           scroll to. -->
+      <h1><a class="home" href="./">osc2r2</a></h1>
+      <p class="tagline">OpenSCENARIO 2.0 runner</p>
+      <!-- Written into the bundle by `npm run build`, so this is a dead link
+           until one has been made. -->
+      <a class="notices" href="./THIRD-PARTY-NOTICES.txt">third-party licences</a>
+      <!-- The whole of what this page has to say for itself. There is no service
+           behind it, no account and nothing collected, so there is nothing for a
+           terms page to be about — what is left is the warranty, and the one
+           property worth stating outright
+           (`docs/adr/0016-retire-the-hosted-service.md`).
+
+           "Never uploaded" and not "never leaves this tab": a link carries the
+           scenario in its fragment, so sharing one is somebody sending it
+           deliberately. This page never sends it anywhere. -->
+      <p class="terms">free, with no warranty · your scenario is never uploaded</p>
+      <p id="notice" class="notice" hidden></p>
+    </header>
+
+    <main id="layout">
+      <section id="scenario" class="pane pane-source">
+        <div class="row">
+          <label>Map <select id="map"></select></label>
+          <!-- Filled in from every check: what the scenario in the box declares,
+               as somewhere to jump to. -->
+          <label>Go to <select id="outline" disabled></select></label>
+          <button id="run" type="button">Run</button>
+        </div>
+        <!-- Filled in by `src/editor.ts`; empty here because CodeMirror builds
+             what goes inside it. -->
+        <div id="editor" class="editor"></div>
+        <!-- What the scenario checker says, kept apart from the run's report
+             below: one is about the text as it is being typed, the other about a
+             run that happened. -->
+        <div id="diagnostics" class="diagnostics" hidden></div>
+        <div class="row row-config">
+          <label>timestep <input id="timestep" type="number" min="0.01" max="0.5" step="0.01" value="0.05" /></label>
+          <label>max time <input id="max-time" type="number" min="0" max="60" step="1" value="60" /></label>
+          <label>seed <input id="seed" type="number" min="0" step="1" value="0" /></label>
+        </div>
+        <div id="report" class="report"></div>
+      </section>
+
+      <!-- The divider, and the only thing between the two panes: the pane's own
+           border was removed so that what is dragged is what is seen. -->
+      <div
+        id="split"
+        class="split"
+        role="separator"
+        aria-orientation="vertical"
+        aria-label="Resize the scenario pane"
+        tabindex="0"
+      ></div>
+
+      <section class="pane pane-stage">
+        <canvas id="stage"></canvas>
+        <!-- What the camera is following, and what the pointer is over. Both are
+             written by `src/main.ts` and both are empty — and so invisible —
+             until there is something to say. -->
+        <output id="watching" class="watching"></output>
+        <output id="place" class="place"></output>
+        <div class="row transport">
+          <button id="play" type="button" aria-label="Play or pause">▶</button>
+          <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Position in the run" />
+          <output id="clock">0.0 / 0.0 s</output>
+          <label>
+            speed
+            <select id="speed">
+              <option value="0.5">0.5×</option>
+              <option value="1" selected>1×</option>
+              <option value="2">2×</option>
+            </select>
+          </label>
+          <label><input id="loop" type="checkbox" checked /> loop</label>
+          <label>follow <select id="follow"></select></label>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>
