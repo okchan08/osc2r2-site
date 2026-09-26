@@ -45,6 +45,11 @@ SITE_URL = "https://okchan08.github.io/osc2r2-site/"
 # Absolute URLs the site is allowed to contain.
 ALLOWED_ABSOLUTE = {
     SITE_URL,
+    # The demo page. It is built from the osc2r2 repository and copied into
+    # site/app/ by that repository's workflow, which writes the canonical link
+    # naming this URL — so the allowance is for a page this repository does not
+    # author but does publish.
+    SITE_URL + "app/",
     SITE_URL + "og.png",
     SITE_URL + "favicon.svg",
     # The VS Code extension listing. Off-site, so it also survives a move.

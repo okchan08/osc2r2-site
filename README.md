@@ -41,6 +41,11 @@ Deployment is automated in CI. Refer to `.github/workflows/deploy.yml`. The CI i
 
 `https://okchan08.github.io/osc2r2-site/`
 
+The demo page is published under it, at
+`https://okchan08.github.io/osc2r2-site/app/`. That directory is not authored
+here: osc2r2 builds it and opens a pull request carrying it, so nothing under
+`site/app/` should be edited by hand — the next publish overwrites it.
+
 ## Outbound links
 
 `tools/check-links.py` rejects any absolute URL that is not in its
