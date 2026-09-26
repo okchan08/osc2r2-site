@@ -31,6 +31,10 @@
   --accent-soft: #fef3e2;
   --accent-line: #e8a44c;
 
+  /* --accent is only 4.58:1 on --accent-soft, and a hover wash pushes it under
+   * 4.5. This is the same amber taken down far enough to sit on that tint. */
+  --accent-ink:  #8f4205;
+
   --code-bg:     #211f1c;
   --code-text:   #e8e3da;
   --code-k:      #e8a44c;   /* keywords  */
@@ -73,6 +77,9 @@
     --accent:      #f0a955;
     --accent-soft: #2b2114;
     --accent-line: #a5702c;
+
+    /* The dark accent is already light against --accent-soft; no ink needed. */
+    --accent-ink:  #f0a955;
 
     --code-bg:     #100f0e;
     --code-bar:    #1c1a18;
@@ -325,6 +332,23 @@ code {
   /* The dark accent is a light amber; white text on it fails contrast. */
   .btn-primary { color: #1a1611; }
 }
+
+/* The playground CTA: the primary's amber, but as a pale tint rather than a
+ * fill. Same family as the primary, a clear step below it in weight. */
+.btn-alt {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: var(--accent-line);
+}
+.btn-alt:hover {
+  /* Only a 10% wash: a deeper one drags the tint down past 4.5:1 against the
+   * label. The border going full accent carries most of the hover. */
+  background: color-mix(in srgb, var(--accent-soft) 90%, var(--accent-ink));
+  border-color: var(--accent);
+}
+/* The tint is pale and the hover darkens it, so the note can't also give up 15%
+ * to the background and still clear 4.5:1 at this size. Size and caps demote it. */
+.btn-alt .btn-note { opacity: 1; }
 
 .btn-ghost {
   background: transparent;
