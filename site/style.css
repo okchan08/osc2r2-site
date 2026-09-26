@@ -23,13 +23,17 @@
   --text:        #1c1a17;
   --text-soft:   #57524a;
   /* Dark enough to clear 4.5:1 on --bg. This token carries real prose
-   * (.rm-foot) and the roadmap tags, not just hairlines, so it cannot be
-   * treated as a decorative grey. */
+   * (the demo caption), not just hairlines, so it cannot be treated as a
+   * decorative grey. */
   --text-faint:  #6f685e;
 
   --accent:      #b45309;
   --accent-soft: #fef3e2;
   --accent-line: #e8a44c;
+
+  /* --accent is only 4.58:1 on --accent-soft, and a hover wash pushes it under
+   * 4.5. This is the same amber taken down far enough to sit on that tint. */
+  --accent-ink:  #8f4205;
 
   --code-bg:     #211f1c;
   --code-text:   #e8e3da;
@@ -73,6 +77,9 @@
     --accent:      #f0a955;
     --accent-soft: #2b2114;
     --accent-line: #a5702c;
+
+    /* The dark accent is already light against --accent-soft; no ink needed. */
+    --accent-ink:  #f0a955;
 
     --code-bg:     #100f0e;
     --code-bar:    #1c1a18;
@@ -299,6 +306,16 @@ code {
   margin-bottom: 1.6em;
 }
 
+/* The hero pair is 352px + 313px against a copy column of about 585px, so the
+ * two buttons sit one above the other at every width the column takes — and
+ * stacked, a 352 over a 313 reads as a misalignment rather than a choice. One
+ * max-content column gives both the wider button's width. minmax(0, …) so a
+ * 320px viewport shrinks them instead of scrolling the page sideways. */
+.hero .cta-row {
+  display: grid;
+  grid-template-columns: minmax(0, max-content);
+}
+
 .btn {
   display: inline-flex;
   align-items: baseline;
@@ -325,6 +342,23 @@ code {
   /* The dark accent is a light amber; white text on it fails contrast. */
   .btn-primary { color: #1a1611; }
 }
+
+/* The playground CTA: the primary's amber, but as a pale tint rather than a
+ * fill. Same family as the primary, a clear step below it in weight. */
+.btn-alt {
+  background: var(--accent-soft);
+  color: var(--accent-ink);
+  border-color: var(--accent-line);
+}
+.btn-alt:hover {
+  /* Only a 10% wash: a deeper one drags the tint down past 4.5:1 against the
+   * label. The border going full accent carries most of the hover. */
+  background: color-mix(in srgb, var(--accent-soft) 90%, var(--accent-ink));
+  border-color: var(--accent);
+}
+/* The tint is pale and the hover darkens it, so the note can't also give up 15%
+ * to the background and still clear 4.5:1 at this size. Size and caps demote it. */
+.btn-alt .btn-note { opacity: 1; }
 
 .btn-ghost {
   background: transparent;
@@ -584,65 +618,33 @@ kbd {
 .code-frame .fn { color: var(--code-fn); }
 .code-frame .n  { color: var(--code-n); }
 
-/* ─────────────────────────────  roadmap  ────────────────────────────── */
+/* ──────────────────────────────  demo  ──────────────────────────────── */
 
-.roadmap {
-  list-style: none;
+.demo-figure {
   margin: 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
-  gap: 20px;
+  /* Native width is 1200, so this leaves a little density in hand on a Retina
+   * screen instead of upscaling the recording to fill the wrap. */
+  max-width: 920px;
 }
 
-/* With the extension shipped, one item is left. An auto-fit track stretches a
- * lone card across the full wrap, where it reads as a banner rather than as an
- * entry in a list; the cap keeps it card-shaped. Drops away on its own if a
- * second item is added back. */
-.roadmap:has(> li:only-child) { max-width: 620px; }
-
-.roadmap > li {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-left: 3px solid var(--accent-line);
-  border-radius: var(--radius);
-  padding: 24px 24px 22px;
-}
-
-.rm-head {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 0.7em;
-}
-.rm-head h3 { font-size: 1.1rem; }
-
-.tag {
-  font-size: 0.71rem;
-  font-weight: 600;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  padding: 3px 9px;
-  border-radius: 999px;
+/* The same frame as the code block, and for the same reason: the recording is
+ * of a dark UI, so on --code-bg the seam at the video's edge never shows. */
+.demo-frame {
+  background: var(--code-bg);
   border: 1px solid var(--border-firm);
-  color: var(--text-faint);
-  white-space: nowrap;
-}
-/* Unused while the list holds a single "in design" item; kept because it is the
- * state that item moves to next, not a leftover from the shipped extension. */
-.tag-soon {
-  background: var(--accent-soft);
-  border-color: var(--accent-line);
-  color: var(--accent);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: 0 14px 34px -22px rgb(0 0 0 / 0.55);
 }
 
-.roadmap p {
-  color: var(--text-soft);
-  font-size: 0.96rem;
+.demo-video {
+  display: block;   /* no inline-baseline gap under the frame */
+  width: 100%;
+  height: auto;
 }
-.rm-foot {
-  margin-top: 1em;
+
+.demo-figure figcaption {
+  margin-top: 0.9em;
   font-size: 0.88rem;
   color: var(--text-faint);
 }

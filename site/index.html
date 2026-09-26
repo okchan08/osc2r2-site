@@ -93,8 +93,8 @@
       <a class="nav-install" href="#install">Install</a>
       <a href="#features">Features</a>
       <a href="#language">Language</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#contact">Contact</a>
+      <a href="#demo">Demo</a>
+      <a href="#questions">Questions</a>
     </nav>
   </div>
 </header>
@@ -118,9 +118,9 @@
             VS&nbsp;Code extension
             <span class="btn-note">on the Marketplace</span>
           </a>
-          <a class="btn btn-ghost" href="#roadmap">
+          <a class="btn btn-alt" href="app/">
             Browser playground
-            <span class="btn-note">in design</span>
+            <span class="btn-note">open the page</span>
           </a>
         </div>
       </div>
@@ -328,42 +328,54 @@
     </div>
   </section>
 
-  <!-- ────────────────────────── roadmap ───────────────────────── -->
-  <section id="roadmap" class="section">
+  <!-- ─────────────────────────── demo ──────────────────────────── -->
+  <section id="demo" class="section">
     <div class="wrap">
-      <h2 class="section-title">What&rsquo;s next</h2>
+      <h2 class="section-title">The whole loop, in the browser</h2>
       <p class="section-lede">
-        The runner, the language server, and the
-        <a href="#install">VS&nbsp;Code extension</a> work today. This is the
-        piece being built on top of them.
+        Write a <code>.osc</code> file, run it against a sample map, and watch
+        the result — with nothing installed. The language server, the runner,
+        and the 3D viewer are all on the one page, which makes it the short way
+        to try the language out, to reproduce a scenario from a bug report, or
+        to hand someone a situation as a link.
       </p>
 
-      <ol class="roadmap">
-        <li>
-          <div class="rm-head">
-            <h3>Browser playground</h3>
-            <span class="tag">in design</span>
-          </div>
-          <p>
-            Edit a <code>.osc</code> file in the browser, run it against a sample
-            map, and see the result — with nothing installed. Meant for trying the
-            language out, reproducing a scenario in a bug report, and sharing a
-            situation with someone by sending them a link.
-          </p>
-        </li>
-      </ol>
+      <figure class="demo-figure">
+        <div class="demo-frame">
+          <video id="demo-video" class="demo-video"
+                 src="app-demo.mp4" poster="app-demo-poster.jpg"
+                 width="1200" height="812"
+                 autoplay muted loop playsinline controls preload="metadata"
+                 aria-label="Screen recording of the browser playground: a two-lane merge scenario is opened and run, then watched from above as one vehicle overtakes another."></video>
+        </div>
+        <figcaption>
+          Eighteen seconds, no sound: a two-lane merge run in the playground and
+          followed through the overtake. <a href="app/">Open the playground</a>.
+        </figcaption>
+      </figure>
     </div>
+
+    <script>
+      /* The loop is decoration, so it follows the OS motion setting rather than
+         overriding it: paused on arrival, with the controls left to start it.
+         Runs while the element is still the parser's most recent one, so the
+         attribute is gone before playback would have begun. */
+      (function () {
+        var v = document.getElementById("demo-video");
+        if (v && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          v.removeAttribute("autoplay");
+          v.pause();
+        }
+      })();
+    </script>
   </section>
 
-  <!-- ────────────────────────── contact ───────────────────────── -->
-  <section id="contact" class="section section-alt">
+  <!-- ────────────────────────── questions ───────────────────────── -->
+  <section id="questions" class="section section-alt">
     <div class="wrap">
-      <h2 class="section-title">Questions go to the issue tracker</h2>
+      <h2 class="section-title">Questions or requests</h2>
       <p class="section-lede">
-        The osc2r2 source is not public, so the issue tracker on this site&rsquo;s
-        repository is where questions about the toolchain are answered — what it
-        supports, how to use it, and what it should do next. There is a template
-        for each kind.
+        In the case you have questions or requests regarding the osc2r2 toolchain, please use the issue tracker on this site&rsquo;s repository.
       </p>
       <div class="cta-row">
         <a class="btn btn-primary" href="https://github.com/okchan08/osc2r2-site/issues/new/choose">
@@ -373,11 +385,9 @@
           Browse open issues
         </a>
       </div>
-      <p class="muted small contact-note">
-        Issues are public. Anything you cannot publish — a customer scenario, a
-        map, a security problem — should go through a
-        <a href="https://github.com/okchan08/osc2r2-site/security/advisories/new">private
-        advisory</a> instead.
+      <p class="muted small questions-note">
+        Please note that issues are public. Anything you cannot publish, for instance a customer scenario, a
+        map, or a security problem — should not be included in an issue.
       </p>
     </div>
   </section>
