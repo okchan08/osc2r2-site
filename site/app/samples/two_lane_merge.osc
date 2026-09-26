@@ -1,0 +1,68 @@
+# What `maps/two_lane_merge.xodr` was built to show, in one run:
+#
+#   lead     cruises in the right-hand lane (-2) and is overtaken
+#   passer   pulls out into lane -1, passes the lead, pulls back in
+#   joining  comes up the on-ramp, merges into lane -2 off the acceleration
+#            lane, then holds the gap it has to the lead
+#
+# It uses the built-in prelude only, so it runs without `standard.osc`.
+#
+# Every phase ends on a distance or an elapsed time, so the run completes rather
+# than timing out, and `tests/maps.rs` asserts it completes with no diagnostics.
+#
+# The distances are what make the manoeuvres land where they are meant to: the
+# passer needs 160 m in lane -1 to get past a lead that is only 8.3 m/s slower,
+# and the joining car needs 175 m to be on road 3 (rather than still on the ramp
+# or in the junction) before it asks for a lane to its left.
+
+scenario main:
+    lead: vehicle
+    passer: vehicle
+    joining: vehicle
+
+    do parallel:
+        # The vehicle being overtaken, and the reference for the space gap.
+        serial:
+            lead.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-2")
+                keep(it.odr_point.s == 120.0)
+            lead.drive() with:
+                speed(60kph)
+                distance(300m)
+
+        # The overtake, split into phases because a modifier cannot say "later".
+        serial:
+            passer.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-2")
+                keep(it.odr_point.s == 80.0)
+            passer.drive() with:
+                speed(90kph)
+                until elapsed(3s)
+            passer.drive() with:
+                speed(90kph)
+                change_lane(side: left)
+                distance(160m)
+            passer.drive() with:
+                speed(90kph)
+                change_lane(side: right)
+                distance(60m)
+
+        # The merge: up the ramp, across junction 100 onto the acceleration
+        # lane (-3), then left into the mainline before that lane closes.
+        serial:
+            joining.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 20.0)
+            joining.change_speed(target: 70kph, rate_peak: 1.5mpsps)
+            joining.drive() with:
+                speed(70kph)
+                distance(175m)
+            joining.drive() with:
+                speed(70kph)
+                change_lane(side: left)
+                distance(40m)
+            joining.keep_space_gap(reference: lead, direction: longitudinal) with:
+                until elapsed(5s)

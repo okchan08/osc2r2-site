@@ -1,0 +1,44 @@
+# What `maps/four_way_crossing.xodr` was built to show: the branch a route picks
+# at a junction, against the branch taken without one.
+#
+#   car      follows a route through connecting road 21 and turns left (north)
+#   ahead    has no route and goes straight on (east), which is what the
+#            straightest-continuation rule picks by itself
+#
+# It uses the built-in prelude only, so it runs without `standard.osc`.
+#
+# Both vehicles start on the west arm's lane 1, which travels towards decreasing
+# s — i.e. towards the junction, since every arm's s axis points away from it.
+
+scenario main:
+    car: vehicle
+    ahead: vehicle
+
+    # Road ids are the map's own: arm 1 (west) -> connecting road 21 -> arm 2
+    # (north). Route values are built by the engine's map methods, never written
+    # as a literal.
+    turn_left: route = map.create_route([
+        map.create_odr_point(road_id: "1", lane_id: "1", s: 80m, t: 0m),
+        map.create_odr_point(road_id: "21", lane_id: "-1", s: 0m, t: 0m),
+        map.create_odr_point(road_id: "2", lane_id: "-1", s: 0m, t: 0m)
+    ])
+
+    do parallel:
+        serial:
+            car.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "1")
+                keep(it.odr_point.s == 100.0)
+            car.drive() with:
+                speed(40kph)
+                along(turn_left)
+                distance(180m)
+
+        serial:
+            ahead.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "1")
+                keep(it.odr_point.s == 60.0)
+            ahead.drive() with:
+                speed(30kph)
+                distance(150m)
