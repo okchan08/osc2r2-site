@@ -93,8 +93,8 @@
       <a class="nav-install" href="#install">Install</a>
       <a href="#features">Features</a>
       <a href="#language">Language</a>
-      <a href="#roadmap">Roadmap</a>
-      <a href="#contact">Contact</a>
+      <a href="#demo">Demo</a>
+      <a href="#questions">Questions</a>
     </nav>
   </div>
 </header>
@@ -328,36 +328,50 @@
     </div>
   </section>
 
-  <!-- ────────────────────────── roadmap ───────────────────────── -->
-  <section id="roadmap" class="section">
+  <!-- ─────────────────────────── demo ──────────────────────────── -->
+  <section id="demo" class="section">
     <div class="wrap">
-      <h2 class="section-title">What&rsquo;s next</h2>
+      <h2 class="section-title">The whole loop, in the browser</h2>
       <p class="section-lede">
-        The runner, the language server, and the
-        <a href="#install">VS&nbsp;Code extension</a> work today. So does the
-        piece built on top of them.
+        Write a <code>.osc</code> file, run it against a sample map, and watch
+        the result — with nothing installed. The language server, the runner,
+        and the 3D viewer are all on the one page, which makes it the short way
+        to try the language out, to reproduce a scenario from a bug report, or
+        to hand someone a situation as a link.
       </p>
 
-      <ol class="roadmap">
-        <li>
-          <div class="rm-head">
-            <h3>Browser playground</h3>
-            <span class="tag tag-soon">live</span>
-          </div>
-          <p>
-            Edit a <code>.osc</code> file in the browser, run it against a sample
-            map, and see the result — with nothing installed. Meant for trying the
-            language out, reproducing a scenario in a bug report, and sharing a
-            situation with someone by sending them a link.
-            <a href="app/">Open the playground</a>.
-          </p>
-        </li>
-      </ol>
+      <figure class="demo-figure">
+        <div class="demo-frame">
+          <video id="demo-video" class="demo-video"
+                 src="app-demo.mp4" poster="app-demo-poster.jpg"
+                 width="1200" height="812"
+                 autoplay muted loop playsinline controls preload="metadata"
+                 aria-label="Screen recording of the browser playground: a two-lane merge scenario is opened and run, then watched from above as one vehicle overtakes another."></video>
+        </div>
+        <figcaption>
+          Eighteen seconds, no sound: a two-lane merge run in the playground and
+          followed through the overtake. <a href="app/">Open the playground</a>.
+        </figcaption>
+      </figure>
     </div>
+
+    <script>
+      /* The loop is decoration, so it follows the OS motion setting rather than
+         overriding it: paused on arrival, with the controls left to start it.
+         Runs while the element is still the parser's most recent one, so the
+         attribute is gone before playback would have begun. */
+      (function () {
+        var v = document.getElementById("demo-video");
+        if (v && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          v.removeAttribute("autoplay");
+          v.pause();
+        }
+      })();
+    </script>
   </section>
 
-  <!-- ────────────────────────── contact ───────────────────────── -->
-  <section id="contact" class="section section-alt">
+  <!-- ────────────────────────── questions ───────────────────────── -->
+  <section id="questions" class="section section-alt">
     <div class="wrap">
       <h2 class="section-title">Questions or requests</h2>
       <p class="section-lede">
@@ -371,7 +385,7 @@
           Browse open issues
         </a>
       </div>
-      <p class="muted small contact-note">
+      <p class="muted small questions-note">
         Please note that issues are public. Anything you cannot publish, for instance a customer scenario, a
         map, or a security problem — should not be included in an issue.
       </p>
