@@ -5,8 +5,6 @@
 #   joining  comes up the on-ramp, merges into lane -2 off the acceleration
 #            lane, then holds the gap it has to the lead
 #
-# It uses the built-in prelude only, so it runs without `standard.osc`.
-#
 # Every phase ends on a distance or an elapsed time, so the run completes rather
 # than timing out, and `tests/maps.rs` asserts it completes with no diagnostics.
 #

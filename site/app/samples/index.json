@@ -1,0 +1,12 @@
+{
+  "samples": [
+    {
+      "id": "four_way_crossing",
+      "map": "four_way_crossing"
+    },
+    {
+      "id": "two_lane_merge",
+      "map": "two_lane_merge"
+    }
+  ]
+}
