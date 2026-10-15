@@ -4,9 +4,42 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>osc2r2 — run an OpenSCENARIO 2.0 scenario</title>
+    <!-- For search engines and link previews. The description is what a result
+         shows under the title; `keywords` is ignored by Google and costs nothing
+         elsewhere. No canonical link and no `og:url`: where this page lives is
+         the site's business, and `check-publishable.mjs` refuses an absolute
+         reference in it. -->
+    <meta
+      name="description"
+      content="Write an OpenSCENARIO 2.0 (OSC2) scenario, run it on an OpenDRIVE road network, and watch it play back — all in the browser, with nothing uploaded."
+    />
+    <meta
+      name="keywords"
+      content="OpenSCENARIO 2.0, OpenSCENARIO DSL, OSC2, ASAM OpenSCENARIO, OpenDRIVE, xodr, scenario simulation, scenario-based testing, autonomous driving, ADAS, scenario editor, WebAssembly"
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="osc2r2 — run an OpenSCENARIO 2.0 scenario" />
+    <meta
+      property="og:description"
+      content="Write an OpenSCENARIO 2.0 scenario, run it on an OpenDRIVE map, and watch it play back in the browser."
+    />
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "osc2r2",
+        "description": "An OpenSCENARIO 2.0 scenario editor and runner that works entirely in the browser, on OpenDRIVE road networks.",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Any (web browser)",
+        "browserRequirements": "Requires JavaScript and WebAssembly",
+        "isAccessibleForFree": true,
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+        "keywords": "OpenSCENARIO 2.0, OSC2, OpenDRIVE, scenario simulation, autonomous driving, ADAS"
+      }
+    </script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <script type="module" crossorigin src="./assets/index-DslMoRnH.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-ECKi_683.css">
+    <script type="module" crossorigin src="./assets/index-DLbhuIuN.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-rePdDrDM.css">
       <link rel="canonical" href="https://okchan08.github.io/osc2r2-site/app/" />
   </head>
   <body>
@@ -32,29 +65,96 @@
            deliberately. This page never sends it anywhere. -->
       <p class="terms">free, with no warranty · your scenario is never uploaded</p>
       <p id="notice" class="notice" hidden></p>
+      <!-- The link to the run on screen, which a run writes into the address bar
+           as well. Up here rather than under the editor because it is about the
+           page as a whole and because what it does — put the address on the
+           clipboard — is the same gesture wherever the button sits. Hidden until
+           there has been a run to link to. -->
+      <div id="permalink" class="permalink" hidden>
+        <button id="copy-link" type="button">share result</button>
+        <!-- An `<output>` announces itself when it changes, which is what makes
+             "copied" an answer to someone who cannot see the button. -->
+        <output id="link-note" class="link-note"></output>
+      </div>
     </header>
 
     <main id="layout">
       <section id="scenario" class="pane pane-source">
-        <div class="row">
-          <label>Map <select id="map"></select></label>
-          <!-- Filled in from every check: what the scenario in the box declares,
-               as somewhere to jump to. -->
-          <label>Go to <select id="outline" disabled></select></label>
-          <button id="run" type="button">Run</button>
+        <!-- A run is a scenario *and* a map, and this pane is where both are
+             chosen and read. One tab each, because the two are independent — a
+             scenario written for one map can be run on another, and either may
+             be a file from this machine that no build of this has ever seen
+             (`docs/adr/0019-a-run-may-bring-its-own-map.md`) — and because
+             there is only one pane's width to show either in. -->
+        <div class="tabs" role="tablist" aria-label="What to show">
+          <button
+            id="tab-scenario"
+            class="tab"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            aria-controls="panel-scenario"
+          >
+            Scenario
+          </button>
+          <button
+            id="tab-map"
+            class="tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            aria-controls="panel-map"
+          >
+            Map
+          </button>
         </div>
-        <!-- Filled in by `src/editor.ts`; empty here because CodeMirror builds
-             what goes inside it. -->
-        <div id="editor" class="editor"></div>
-        <!-- What the scenario checker says, kept apart from the run's report
-             below: one is about the text as it is being typed, the other about a
-             run that happened. -->
-        <div id="diagnostics" class="diagnostics" hidden></div>
+
+        <div id="panel-scenario" class="panel" role="tabpanel" aria-labelledby="tab-scenario">
+          <div class="row">
+            <label>Scenario <select id="scenario-choice"></select></label>
+          </div>
+          <!-- Filled in by `src/editor.ts`; empty here because CodeMirror builds
+               what goes inside it. -->
+          <div id="editor" class="editor"></div>
+          <!-- What the scenario checker says, kept apart from the run's report
+               below: one is about the text as it is being typed, the other about
+               a run that happened. It grows with the list up to a ceiling, and
+               the handle above it is how somebody asks for more than that — or
+               for less. Both are put away when there is nothing to report. -->
+          <div
+            id="diagnostics-split"
+            class="split split-row"
+            role="separator"
+            aria-orientation="horizontal"
+            aria-label="Resize the list of problems"
+            tabindex="0"
+            hidden
+          ></div>
+          <div id="diagnostics" class="diagnostics" hidden></div>
+        </div>
+
+        <div id="panel-map" class="panel" role="tabpanel" aria-labelledby="tab-map" hidden>
+          <div class="row">
+            <label>Map <select id="map-choice"></select></label>
+          </div>
+          <!-- The map as its author wrote it, shown and not edited: what a run
+               happens on is chosen above, not typed here. -->
+          <div id="map-text" class="editor"></div>
+        </div>
+
+        <!-- Below both, because a run is of the pair and not of either: the
+             button and the three numbers it runs under, on one line. -->
         <div class="row row-config">
+          <button id="run" type="button">Run</button>
           <label>timestep <input id="timestep" type="number" min="0.01" max="0.5" step="0.01" value="0.05" /></label>
           <label>max time <input id="max-time" type="number" min="0" max="60" step="1" value="60" /></label>
           <label>seed <input id="seed" type="number" min="0" step="1" value="0" /></label>
         </div>
+        <!-- Opened by choosing "Upload…" in the menus above; never seen. A file
+             input cannot be filled in by a page, so this is the only way in —
+             and the page reads the file, it does not upload it. -->
+        <input id="map-file" type="file" accept=".xodr,.xml" hidden />
+        <input id="scenario-file" type="file" accept=".osc,.txt" hidden />
         <div id="report" class="report"></div>
       </section>
 
@@ -71,6 +171,10 @@
 
       <section class="pane pane-stage">
         <canvas id="stage"></canvas>
+        <!-- What the last run came to, over the road it happened on. Opposite
+             corner from the followed actor, and empty — so invisible — until a
+             run has produced one. -->
+        <output id="outcome" class="outcome"></output>
         <!-- What the camera is following, and what the pointer is over. Both are
              written by `src/main.ts` and both are empty — and so invisible —
              until there is something to say. -->
@@ -78,7 +182,13 @@
         <output id="place" class="place"></output>
         <div class="row transport">
           <button id="play" type="button" aria-label="Play or pause">▶</button>
-          <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Position in the run" />
+          <!-- The marks are where invocations failed. Hidden from assistive
+               technology: the report lists the same failures as buttons that go
+               to them, which is the version of this that can be read out. -->
+          <div class="scrub">
+            <input id="scrub" type="range" min="0" max="1" step="0.001" value="0" aria-label="Position in the run" />
+            <div id="marks" class="marks" aria-hidden="true"></div>
+          </div>
           <output id="clock">0.0 / 0.0 s</output>
           <label>
             speed

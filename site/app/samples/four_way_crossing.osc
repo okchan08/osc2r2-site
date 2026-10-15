@@ -5,8 +5,6 @@
 #   ahead    has no route and goes straight on (east), which is what the
 #            straightest-continuation rule picks by itself
 #
-# It uses the built-in prelude only, so it runs without `standard.osc`.
-#
 # Both vehicles start on the west arm's lane 1, which travels towards decreasing
 # s — i.e. towards the junction, since every arm's s axis points away from it.
 
