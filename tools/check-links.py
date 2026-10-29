@@ -11,7 +11,8 @@ What it verifies, for every .html file under site/:
     a case-sensitive check — macOS will happily serve Style.css locally and
     GitHub Pages will not;
   * no id is declared twice;
-  * every absolute http(s) URL is one of the few that are supposed to exist.
+  * every absolute http(s) URL is one of the few that are supposed to exist;
+  * the page loads site/analytics.js.
 
 And, for the files search engines read rather than people:
 
@@ -52,8 +53,14 @@ ALLOWED_ABSOLUTE = {
     SITE_URL + "app/",
     SITE_URL + "og.png",
     SITE_URL + "favicon.svg",
+    # 404.html loads the analytics script from here, being served from paths
+    # that make a relative one meaningless.
+    SITE_URL + "analytics.js",
     # The VS Code extension listing. Off-site, so it also survives a move.
     "https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2",
+    # What Google does with the data Analytics collects, which the footer's
+    # notice links to as the Analytics terms ask. Off-site.
+    "https://policies.google.com/technologies/partner-sites",
     # The contact route. These live on github.com rather than the Pages site, so
     # unlike the four above they survive a move to a custom domain.
     "https://github.com/okchan08/osc2r2-site/issues",
@@ -74,6 +81,7 @@ class Refs(HTMLParser):
         self.duplicate_ids: list[tuple[str, int]] = []
         self.refs: list[tuple[str, int]] = []
         self.canonical: str | None = None
+        self.scripts: list[str] = []
         self.noindex = False
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
@@ -84,6 +92,8 @@ class Refs(HTMLParser):
             self.canonical = attr.get("href", "").strip()
         elif tag == "meta" and attr.get("name", "").lower() == "robots":
             self.noindex = "noindex" in attr.get("content", "").lower()
+        elif tag == "script" and attr.get("src"):
+            self.scripts.append(attr["src"].strip())
 
         for name, value in attrs:
             if value is None:
@@ -259,6 +269,24 @@ def check_canonical(page: Path, parser: Refs) -> list[str]:
     return []
 
 
+def check_analytics(page: Path, parser: Refs) -> list[str]:
+    """The page loads site/analytics.js, so that it is counted.
+
+    site/app/index.html is the one this is really for: it is written by osc2r2's
+    publish step rather than here, and a publish that stopped adding the tag
+    would otherwise take the playground out of the numbers without a sound.
+    """
+    analytics = SITE / "analytics.js"
+    for src in parser.scripts:
+        if src == SITE_URL + "analytics.js":
+            return []
+        if not urlparse(src).scheme and not src.startswith("/"):
+            if (page.parent / unquote(src)).resolve() == analytics:
+                return []
+    rel = page.relative_to(SITE.parent)
+    return [f"{rel}: does not load analytics.js"]
+
+
 def main() -> int:
     pages = sorted(SITE.rglob("*.html"))
     if not pages:
@@ -271,6 +299,7 @@ def main() -> int:
     for page, refs in parsed.items():
         problems.extend(check(page, refs))
         problems.extend(check_canonical(page, refs))
+        problems.extend(check_analytics(page, refs))
     problems.extend(check_robots())
     problems.extend(check_sitemap(parsed))
 
