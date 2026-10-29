@@ -56,3 +56,22 @@ to the page. The ones the site currently points at:
   <https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2>
   (`okchan08.openscenario2`, listed as *OpenSCENARIO 2.0*)
 - this repository's issues, new-issue chooser, and private advisory form
+- Google's page on how it uses data from sites that use its services —
+  <https://policies.google.com/technologies/partner-sites>, linked from the
+  footer's analytics notice
+
+## Analytics
+
+Every page loads `site/analytics.js`, which is Google Analytics (GA4) and the
+measurement ID. `tools/check-links.py` fails a page that does not load it —
+including `site/app/index.html`, into which osc2r2's publish step writes the
+tag.
+
+The playground reports its own events (runs and their settings, shared links,
+uploads) through the `gtag` this file defines. It never reports the scenario,
+the map, or a file's contents, and the page location is sent without its
+fragment, which is where a run's link carries the scenario.
+
+In the GA property, keep **Enhanced measurement → Page changes based on browser
+history events** turned off: the playground rewrites its history entry on every
+run.
