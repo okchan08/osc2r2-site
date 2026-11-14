@@ -5,7 +5,19 @@
       "map": "four_way_crossing"
     },
     {
+      "id": "four_way_crossing__cyclist",
+      "map": "four_way_crossing"
+    },
+    {
+      "id": "four_way_crossing__pedestrian",
+      "map": "four_way_crossing"
+    },
+    {
       "id": "two_lane_merge",
+      "map": "two_lane_merge"
+    },
+    {
+      "id": "two_lane_merge__mixed_traffic",
       "map": "two_lane_merge"
     }
   ]

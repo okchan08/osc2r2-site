@@ -38,8 +38,8 @@
       }
     </script>
     <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
-    <script type="module" crossorigin src="./assets/index-DLbhuIuN.js"></script>
-    <link rel="stylesheet" crossorigin href="./assets/index-rePdDrDM.css">
+    <script type="module" crossorigin src="./assets/index-DMPN93pk.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-o7tOMTzx.css">
       <link rel="canonical" href="https://okchan08.github.io/osc2r2-site/app/" />
       <script src="../analytics.js"></script>
   </head>
@@ -52,30 +52,44 @@
            scroll to. -->
       <h1><a class="home" href="./">osc2r2</a></h1>
       <p class="tagline">OpenSCENARIO 2.0 runner</p>
+      <!-- The way out to the site this page is published into, and to its privacy
+           page. Hidden and without an address here: the bundle does not know where
+           it will be put, so the publish step points them at the site and shows
+           them (`.github/scripts/make-findable.mjs`). -->
+      <a href="../" class="notices" data-site="">about osc2r2</a>
       <!-- Written into the bundle by `npm run build`, so this is a dead link
            until one has been made. -->
       <a class="notices" href="./THIRD-PARTY-NOTICES.txt">third-party licences</a>
       <!-- The whole of what this page has to say for itself. There is no service
-           behind it, no account and nothing collected, so there is nothing for a
-           terms page to be about — what is left is the warranty, and the one
-           property worth stating outright
-           (`docs/adr/0016-retire-the-hosted-service.md`).
+           behind it and no account, so there is nothing for a terms page to be
+           about — what is left is the warranty, the one property worth stating
+           outright (`docs/adr/0016-retire-the-hosted-service.md`). That the
+           published copy is counted is the site's consent banner's to say, since
+           it is the one that asks; the privacy link below says the rest
+           (`docs/adr/0024-count-runs-with-google-analytics.md`).
 
            "Never uploaded" and not "never leaves this tab": a link carries the
            scenario in its fragment, so sharing one is somebody sending it
-           deliberately. This page never sends it anywhere. -->
-      <p class="terms">free, with no warranty · your scenario is never uploaded</p>
+           deliberately. This page never sends it anywhere — Analytics included,
+           which is told how a run went and never what it ran
+           (`src/analytics.ts`). -->
+      <p class="terms">
+        free, with no warranty · your scenario is never uploaded
+      </p>
+      <a href="../privacy.html" class="notices" data-site="privacy.html">privacy</a>
       <p id="notice" class="notice" hidden></p>
       <!-- The link to the run on screen, which a run writes into the address bar
            as well. Up here rather than under the editor because it is about the
            page as a whole and because what it does — put the address on the
            clipboard — is the same gesture wherever the button sits. Hidden until
-           there has been a run to link to. -->
+           a run has finished with a result there is a link to. -->
       <div id="permalink" class="permalink" hidden>
-        <button id="copy-link" type="button">share result</button>
-        <!-- An `<output>` announces itself when it changes, which is what makes
-             "copied" an answer to someone who cannot see the button. -->
+        <button id="copy-link" type="button" hidden>share result</button>
+        <!-- Why there is no button, when a run could not be put in a link. -->
         <output id="link-note" class="link-note"></output>
+        <!-- An `<output>` announces itself when it changes, which is what makes
+             "copied" an answer to someone who cannot see the toast. -->
+        <output id="toast" class="toast"></output>
       </div>
     </header>
 
@@ -171,16 +185,21 @@
       ></div>
 
       <section class="pane pane-stage">
-        <canvas id="stage"></canvas>
-        <!-- What the last run came to, over the road it happened on. Opposite
-             corner from the followed actor, and empty — so invisible — until a
-             run has produced one. -->
-        <output id="outcome" class="outcome"></output>
-        <!-- What the camera is following, and what the pointer is over. Both are
-             written by `src/main.ts` and both are empty — and so invisible —
-             until there is something to say. -->
-        <output id="watching" class="watching"></output>
-        <output id="place" class="place"></output>
+        <!-- The canvas and what is written over it, in a box of their own so the
+             corners they sit in are the canvas's — however many lines the
+             controls below take. -->
+        <div class="viewport">
+          <canvas id="stage"></canvas>
+          <!-- What the last run came to, over the road it happened on. Opposite
+               corner from the followed actor, and empty — so invisible — until a
+               run has produced one. -->
+          <output id="outcome" class="outcome"></output>
+          <!-- What the camera is following, and what the pointer is over. Both
+               are written by `src/main.ts` and both are empty — and so invisible
+               — until there is something to say. -->
+          <output id="watching" class="watching"></output>
+          <output id="place" class="place"></output>
+        </div>
         <div class="row transport">
           <button id="play" type="button" aria-label="Play or pause">▶</button>
           <!-- The marks are where invocations failed. Hidden from assistive

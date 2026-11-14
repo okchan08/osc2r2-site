@@ -1,0 +1,80 @@
+# A pedestrian crossing on `maps/four_way_crossing.xodr`: a person crosses the
+# south arm on its crosswalk, and the two cars coming up to the junction stop
+# short of it because the person is on it, and go on once the road is clear.
+#
+#   walker   waits on the east sidewalk (lane 2) for a second, crosses both
+#            driving lanes on the crosswalk to the west sidewalk (lane -2), and
+#            walks on along it, away from the junction
+#   car      comes up the arm towards the junction at 30 km/h; once the walker
+#            has stepped onto the crosswalk and the car is within 20 m of it,
+#            brakes to a stop, waits until the walker has reached the far
+#            sidewalk, and pulls away again, straight on through the junction
+#   behind   follows the car at the gap it starts with, so it stops behind it
+#
+# The crossing is a path of two points on the same road, one in the middle of
+# each sidewalk at the crosswalk's station: a path whose points are all on one
+# road is walked straight from one to the next, across whatever lanes lie
+# between them, and `follow_path` ends when the walker passes the last point.
+#
+# The car reacts to where the walker is, so nothing here is timed by hand: the
+# events below are evaluated every step, and the car's `until`s end on them.
+# `distance_along_route` measures how far the walker has come along the crossing,
+# and how far it has still to go; the sidewalks are 2 m wide, so within a metre
+# of the end it is off the road. `space_gap` is the car's station less the
+# walker's: every arm's s axis points away from the junction, so lane 1 travels
+# towards it and lane -2 away from it, and the gap shrinks as the car comes up.
+# The crosswalk spans s = 2..5, and 20 m out at 30 km/h the car stops about 6 m
+# short of it.
+
+scenario main:
+    walker: person
+    car: vehicle
+    behind: vehicle
+
+    crossing: path = map.create_path_odr_points(points: [
+        map.create_odr_point(road_id: "4", lane_id: "2", s: 3.5m, t: 0m),
+        map.create_odr_point(road_id: "4", lane_id: "-2", s: 3.5m, t: 0m)
+    ], interpolation: straight_line, on_road_network: true)
+
+    event walker_across is walker.distance_along_route(crossing, from: from_end) <= 1m
+    event yield_to_walker is walker.distance_along_route(crossing) > 0m and walker.distance_along_route(crossing, from: from_end) > 1m and car.space_gap(walker, longitudinal) <= 20m
+
+    do parallel:
+        serial:
+            walker.assign_position() with:
+                keep(it.odr_point.road_id == "4")
+                keep(it.odr_point.lane_id == "2")
+                keep(it.odr_point.s == 3.5)
+            walker.walk() with:
+                until elapsed(1s)
+            walker.follow_path(absolute: crossing) with:
+                speed(1.4mps)
+            walker.walk() with:
+                speed(1.4mps)
+                until elapsed(8s)
+
+        serial:
+            car.assign_position() with:
+                keep(it.odr_point.road_id == "4")
+                keep(it.odr_point.lane_id == "1")
+                keep(it.odr_point.s == 45.0)
+            car.drive() with:
+                speed(30kph)
+                until @yield_to_walker
+            car.change_speed(target: 0kph, rate_peak: 2.5mpsps)
+            car.drive() with:
+                until @walker_across
+            car.change_speed(target: 30kph, rate_peak: 2.5mpsps)
+            car.drive() with:
+                until elapsed(8s)
+
+        serial:
+            behind.assign_position() with:
+                keep(it.odr_point.road_id == "4")
+                keep(it.odr_point.lane_id == "1")
+                keep(it.odr_point.s == 60.0)
+            behind.drive() with:
+                speed(30kph)
+                until elapsed(1s)
+            behind.keep_space_gap(reference: car, direction: longitudinal) with:
+                until elapsed(17s)

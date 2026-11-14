@@ -1,0 +1,83 @@
+# Mixed traffic on `maps/two_lane_merge.xodr`: the categories of vehicle the
+# standard has, sharing one motorway.
+#
+#   truck    holds 70 km/h in the right-hand lane (-2)
+#   car      passes it in the fast lane (-1) at 100 km/h
+#   bus      comes up the on-ramp, merges into lane -2 well behind the truck,
+#            and settles at the truck's speed
+#   rider    a motorbike, catching the truck up in lane -2, pulling out to pass
+#            it and moving back in once it is some 30 m clear
+#
+# What each is drawn as comes from its `vehicle_category`. The standard has no
+# category for a motorbike of its own: it is a `vru_vehicle`, like a bicycle.
+
+scenario main:
+    truck: vehicle with:
+        keep(it.vehicle_category == truck)
+    car: vehicle with:
+        keep(it.vehicle_category == car)
+    bus: vehicle with:
+        keep(it.vehicle_category == bus)
+    rider: vehicle with:
+        keep(it.vehicle_category == vru_vehicle)
+
+    do parallel:
+        serial:
+            truck.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-2")
+                keep(it.odr_point.s == 100.0)
+            truck.drive() with:
+                speed(70kph)
+                distance(380m)
+
+        serial:
+            car.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 60.0)
+            car.drive() with:
+                speed(100kph)
+                distance(400m)
+
+        # The same merge as the two-lane merge demo's joining car: up the ramp,
+        # across the junction onto the acceleration lane (-3), then left.
+        serial:
+            bus.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 10.0)
+            bus.change_speed(target: 70kph, rate_peak: 1.2mpsps)
+            bus.drive() with:
+                speed(70kph)
+                distance(175m)
+            bus.drive() with:
+                speed(70kph)
+                change_lane(side: left)
+                distance(40m)
+            bus.drive() with:
+                speed(70kph)
+                distance(100m)
+
+        # Six seconds closes an 80 m gap to the truck to 30 m. The pass is
+        # measured from where the lane change *starts*, so it has to cover the
+        # whole of the truck's lead and then some before the rider turns back.
+        serial:
+            rider.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-2")
+                keep(it.odr_point.s == 20.0)
+            rider.drive() with:
+                speed(100kph)
+                until elapsed(6s)
+            rider.drive() with:
+                speed(100kph)
+                change_lane(side: left)
+                distance(200m)
+            rider.drive() with:
+                speed(100kph)
+                change_lane(side: right)
+                distance(60m)
+            rider.drive() with:
+                speed(100kph)
+                distance(60m)

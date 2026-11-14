@@ -1,0 +1,65 @@
+# Behind a cyclist on `maps/four_way_crossing.xodr`: a car closes up on a
+# cyclist on the north arm and then holds the gap through the bend, rather than
+# passing — the arm has one lane each way.
+#
+#   cyclist  rides away from the junction at 18 km/h, keeping to the right of
+#            its lane
+#   car      starts 30 m back at 30 km/h, which closes the gap to 10 m in six
+#            seconds, and from there keeps that gap behind the cyclist
+#   walkers  two people walking in single file along the far sidewalk, towards
+#            the junction
+#
+# All of it stays on the one road. `keep_space_gap` does not hold its gap while
+# the two actors are on different roads, and a `lateral` offset is measured from
+# the centre of the lane, positive to the left of the *road's* direction — so on
+# lane -1, which runs the road's way, negative is the rider's right. The offset
+# is placed at once rather than ramped, so the rider starts at the centre of its
+# lane for a single frame. The walkers are on the sidewalk outside lane 1, lane
+# 2, which runs the same way lane 1 does.
+
+scenario main:
+    cyclist: vehicle with:
+        keep(it.vehicle_category == vru_vehicle)
+    car: vehicle
+    first_walker: person
+    second_walker: person
+
+    do parallel:
+        serial:
+            cyclist.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 40.0)
+            cyclist.drive() with:
+                speed(18kph)
+                lateral(distance: -1.0m)
+                distance(130m)
+
+        serial:
+            car.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 10.0)
+            car.drive() with:
+                speed(30kph)
+                until elapsed(6s)
+            car.keep_space_gap(reference: cyclist, direction: longitudinal) with:
+                until elapsed(20s)
+
+        serial:
+            first_walker.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "2")
+                keep(it.odr_point.s == 150.0)
+            first_walker.walk() with:
+                speed(1.3mps)
+                distance(34m)
+
+        serial:
+            second_walker.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "2")
+                keep(it.odr_point.s == 153.0)
+            second_walker.walk() with:
+                speed(1.3mps)
+                distance(34m)
