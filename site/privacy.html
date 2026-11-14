@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy — osc2r2</title>
+<meta name="description" content="What the osc2r2 site measures with Google Analytics, only with your consent, what it never sends, and how to change your choice.">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css">
+
+<!-- The consent buttons below are wired by this script, as the banner is. -->
+<script src="analytics.js"></script>
+
+<meta name="theme-color" content="#fbfaf8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#161513" media="(prefers-color-scheme: dark)">
+<link rel="canonical" href="https://okchan08.github.io/osc2r2-site/privacy.html">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site-header">
+  <div class="wrap header-inner">
+    <a class="brand" href="./">
+      <svg class="brand-mark" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+        <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="currentColor" stroke-width="8" stroke-linecap="round" opacity=".18"/>
+        <path d="M4 28C4 16 13 6 29 6" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 4" opacity=".5"/>
+        <circle cx="14.9" cy="9.3" r="3" fill="currentColor"/>
+      </svg>
+      <span class="brand-name">osc2r2</span>
+    </a>
+  </div>
+</header>
+
+<main id="main" class="wrap legal">
+
+  <h1>Privacy</h1>
+  <p class="muted small">Last updated 2026-11-14.</p>
+
+  <section id="choice" aria-labelledby="choice-title">
+    <h2 id="choice-title">Your choice</h2>
+    <p>
+      With your permission, this site uses Google Analytics to count visits and see how the playground is used.
+      Until you do, Google's script is not loaded and no cookie is set. You can change your mind here at any time.
+      With your permission, this site uses Google Analytics to count visits and see how the playground is used.
+    </p>
+    <p data-consent-status></p>
+    <div class="cta-row">
+      <button class="btn btn-ghost" type="button" data-consent="granted">Allow Analytics</button>
+      <button class="btn btn-ghost" type="button" data-consent="denied">Decline Analytics</button>
+    </div>
+  </section>
+
+  <section aria-labelledby="who-title">
+    <h2 id="who-title">Who runs this site</h2>
+    <p>
+      osc2r2 and this site are a free, non-commercial project run by me, <a href="https://github.com/okchan08">okchan08 on GitHub</a>.
+      My profile there lists ways to contact me. Questions about this page or application can also be raised in the site’s <a href="https://github.com/okchan08/osc2r2-site/issues">issues</a>.
+    </p>
+  </section>
+
+  <section aria-labelledby="what-title">
+    <h2 id="what-title">What is measured, if you allow it</h2>
+    <p>
+      Google Analytics records the pages you visit, details your browser reports
+      (device type, browser, language and the page you came from), and an approximate
+      location that Google derives from your IP address.
+      
+      In the
+      playground it also records:
+    </p>
+    <ul>
+      <li>for each run: whether it was started with the button or from a link,
+        which bundled sample and map it used (or whether you used your own), its
+        timestep, time limit and seed, how it ended, and how long it took;</li>
+      <li>whether copying a share link worked;</li>
+      <li>whether a file you opened was a map or a scenario.</li>
+    </ul>
+    <p>
+      <strong>Never sent:</strong> the scenario you write, a map or file you
+      open, file names, any output or messages from a run or the checker, and the part
+      of the URL after <code>#</code>, which is where a share link carries
+      the scenario. The playground runs entirely in your browser; nothing you
+      write is uploaded.
+    </p>
+  </section>
+
+  <section aria-labelledby="cookies-title">
+    <h2 id="cookies-title">Cookies and storage</h2>
+    <p>
+      If you allow Analytics, Google sets the cookies <code>_ga</code> and
+      <code>_ga_PQZ953P2WJ</code>, which distinguish your visits from other people’s
+      and last up to two years. Your choice itself is kept in your browser's
+      local storage under <code>osc2r2-analytics</code>, so that you are not
+      asked on every page. Declining after allowing deletes those cookies.
+    </p>
+  </section>
+
+  <section aria-labelledby="why-title">
+    <h2 id="why-title">Why, and on what basis</h2>
+    <p>
+      To learn which parts of osc2r2 are used and where runs go wrong, so that
+      this project can be better. The legal basis is your consent, which you can
+      withdraw above at any time; withdrawing consent does not affect data collected
+      before then.
+    </p>
+  </section>
+
+  <section aria-labelledby="recipients-title">
+    <h2 id="recipients-title">Who receives it, and for how long</h2>
+    <p>
+      Google, which provides Analytics, receives the data and may process it
+      outside your country, including in the United States; Google participates 
+      in the EU–U.S. Data Privacy Framework
+      <a href="https://policies.google.com/technologies/partner-sites">How Google uses this data</a>.
+      Advertising features are turned off. Analytics retains the event data for two
+      months; I see only the aggregated reports Analytics produces,
+      which don’t let me identify you.
+    </p>
+  </section>
+
+  <section aria-labelledby="rights-title">
+    <h2 id="rights-title">Your rights</h2>
+    <p>
+      Depending on where you live — in the EU, the EEA, the UK or Switzerland,
+      for example — you may have the right to ask what data about you is
+      processed, to have it corrected or erased, to object to its processing,
+      and to complain to your data protection authority. Since I cannot
+      identify you in Analytics' reports, the quickest way to have your data
+      removed is to decline above, which deletes the cookies that link your
+      visits together.
+    </p>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap footer-inner">
+    <p class="footer-brand">osc2r2</p>
+    <p class="small">
+      <a href="./">Home</a>
+      &middot;
+      <a href="app/">Playground</a>
+      &middot;
+      <a href="https://github.com/okchan08/osc2r2-site/issues">Questions and bug reports</a>
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

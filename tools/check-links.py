@@ -56,11 +56,16 @@ ALLOWED_ABSOLUTE = {
     # 404.html loads the analytics script from here, being served from paths
     # that make a relative one meaningless.
     SITE_URL + "analytics.js",
+    # The privacy page names itself as canonical.
+    SITE_URL + "privacy.html",
     # The VS Code extension listing. Off-site, so it also survives a move.
     "https://marketplace.visualstudio.com/items?itemName=okchan08.openscenario2",
     # What Google does with the data Analytics collects, which the footer's
     # notice links to as the Analytics terms ask. Off-site.
     "https://policies.google.com/technologies/partner-sites",
+    # Who runs the site, which the privacy page names as its contact: the
+    # profile lists the ways to reach its owner. Off-site.
+    "https://github.com/okchan08",
     # The contact route. These live on github.com rather than the Pages site, so
     # unlike the four above they survive a move to a custom domain.
     "https://github.com/okchan08/osc2r2-site/issues",

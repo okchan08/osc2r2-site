@@ -658,6 +658,21 @@ kbd {
   max-width: 46em;
 }
 
+/* ─────────────────────────────── privacy ────────────────────────────── */
+
+.legal {
+  max-width: 46em;
+  padding-block: 48px 64px;
+}
+.legal h1 { font-size: 2rem; margin-bottom: 0.3em; }
+.legal h2 { font-size: 1.25rem; margin: 2em 0 0.6em; }
+.legal ul { padding-left: 1.3em; margin: 0 0 1em; }
+.legal li { margin-bottom: 0.4em; }
+/* A <button> does not inherit the page's font as a link does. */
+.legal button.btn { font-family: inherit; cursor: pointer; }
+.legal [data-consent-status] { font-weight: 560; }
+.legal [data-consent-status]:empty { display: none; }
+
 /* ────────────────────────────── footer ──────────────────────────────── */
 
 .site-footer {
