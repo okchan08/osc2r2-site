@@ -167,9 +167,9 @@
     var text = document.createElement("p");
     text.appendChild(
       document.createTextNode(
-        "May this site count visits, and how the playground is used, with Google " +
-          "Analytics? It sets cookies only if you allow it, and nothing you write " +
-          "or open in the playground is ever sent. ",
+        "We\u2019d like to use Google Analytics to count visits and see how the " +
+          "playground is used. Cookies are only set if you allow it, and your " +
+          "playground content is never sent. ",
       ),
     );
     var more = document.createElement("a");
