@@ -58,12 +58,17 @@ to the page. The ones the site currently points at:
 - this repository's issues, new-issue chooser, and private advisory form
 - Google's page on how it uses data from sites that use its services —
   <https://policies.google.com/technologies/partner-sites>, linked from the
-  footer's analytics notice
+  privacy page
+- the owner's GitHub profile — <https://github.com/okchan08>, the privacy page's
+  contact, since it lists the ways to reach them
 
 ## Analytics
 
 Every page loads `site/analytics.js`, which is Google Analytics (GA4) and the
-measurement ID. `tools/check-links.py` fails a page that does not load it —
+measurement ID — and the consent banner in front of it. Nothing is measured,
+and no cookie is set, until a visitor allows it; every visitor is asked,
+wherever they are. `site/privacy.html` says what is measured and lets a visitor
+change their choice. `tools/check-links.py` fails a page that does not load it —
 including `site/app/index.html`, into which osc2r2's publish step writes the
 tag.
 
@@ -72,6 +77,9 @@ uploads) through the `gtag` this file defines. It never reports the scenario,
 the map, or a file's contents, and the page location is sent without its
 fragment, which is where a run's link carries the scenario.
 
-In the GA property, keep **Enhanced measurement → Page changes based on browser
-history events** turned off: the playground rewrites its history entry on every
-run.
+In the GA property:
+
+- keep **Enhanced measurement → Page changes based on browser history events**
+  turned off: the playground rewrites its history entry on every run;
+- keep **Data retention** at two months and **Google signals** off, as the
+  privacy page says.
