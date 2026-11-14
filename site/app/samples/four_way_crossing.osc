@@ -1,16 +1,28 @@
 # What `maps/four_way_crossing.xodr` was built to show: the branch a route picks
-# at a junction, against the branch taken without one.
+# at a junction, against the branch taken without one — with the other road
+# users a town junction has.
 #
 #   car      follows a route through connecting road 21 and turns left (north)
 #   ahead    has no route and goes straight on (east), which is what the
 #            straightest-continuation rule picks by itself
+#   cyclist  comes the other way, from the east arm straight through to the
+#            west, while the two cars are still queued on the west arm
+#   walker   walks along the north arm's sidewalk towards the junction, on the
+#            far side of the road from the lane the turning car comes out into
 #
 # Both vehicles start on the west arm's lane 1, which travels towards decreasing
 # s — i.e. towards the junction, since every arm's s axis points away from it.
+#
+# The cyclist is a `vehicle` in the standard's `vru_vehicle` category, and the
+# walker is a `person`; the player draws each as what it was declared as. The
+# sidewalk is lane 2, outside lane 1, and runs the same way.
 
 scenario main:
     car: vehicle
     ahead: vehicle
+    cyclist: vehicle with:
+        keep(it.vehicle_category == vru_vehicle)
+    walker: person
 
     # Road ids are the map's own: arm 1 (west) -> connecting road 21 -> arm 2
     # (north). Route values are built by the engine's map methods, never written
@@ -40,3 +52,21 @@ scenario main:
             ahead.drive() with:
                 speed(30kph)
                 distance(150m)
+
+        serial:
+            cyclist.assign_position() with:
+                keep(it.odr_point.road_id == "3")
+                keep(it.odr_point.lane_id == "1")
+                keep(it.odr_point.s == 50.0)
+            cyclist.drive() with:
+                speed(18kph)
+                distance(120m)
+
+        serial:
+            walker.assign_position() with:
+                keep(it.odr_point.road_id == "2")
+                keep(it.odr_point.lane_id == "2")
+                keep(it.odr_point.s == 40.0)
+            walker.walk() with:
+                speed(1.4mps)
+                distance(30m)

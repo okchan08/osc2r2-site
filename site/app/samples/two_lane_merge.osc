@@ -1,12 +1,19 @@
 # What `maps/two_lane_merge.xodr` was built to show, in one run:
 #
-#   lead     cruises in the right-hand lane (-2) and is overtaken
+#   lead     a truck, cruising in the right-hand lane (-2) and overtaken
 #   passer   pulls out into lane -1, passes the lead, pulls back in
 #   joining  comes up the on-ramp, merges into lane -2 off the acceleration
 #            lane, then holds the gap it has to the lead
+#   rider    a motorbike, coming up the fast lane (-1) from behind and past
+#            everything — far enough back that the passer is out of its way
+#            before it arrives
 #
 # Every phase ends on a distance or an elapsed time, so the run completes rather
 # than timing out, and `tests/maps.rs` asserts it completes with no diagnostics.
+#
+# The truck and the motorbike are a `vehicle` whose `vehicle_category` is pinned,
+# which is what the player draws them from. The standard has no category for a
+# motorbike of its own: it is a `vru_vehicle`, like a bicycle.
 #
 # The distances are what make the manoeuvres land where they are meant to: the
 # passer needs 160 m in lane -1 to get past a lead that is only 8.3 m/s slower,
@@ -14,9 +21,12 @@
 # or in the junction) before it asks for a lane to its left.
 
 scenario main:
-    lead: vehicle
+    lead: vehicle with:
+        keep(it.vehicle_category == truck)
     passer: vehicle
     joining: vehicle
+    rider: vehicle with:
+        keep(it.vehicle_category == vru_vehicle)
 
     do parallel:
         # The vehicle being overtaken, and the reference for the space gap.
@@ -64,3 +74,13 @@ scenario main:
                 distance(40m)
             joining.keep_space_gap(reference: lead, direction: longitudinal) with:
                 until elapsed(5s)
+
+        # Passes everything in lane -1, after the passer has pulled back in.
+        serial:
+            rider.assign_position() with:
+                keep(it.odr_point.road_id == "1")
+                keep(it.odr_point.lane_id == "-1")
+                keep(it.odr_point.s == 0.0)
+            rider.drive() with:
+                speed(110kph)
+                distance(420m)

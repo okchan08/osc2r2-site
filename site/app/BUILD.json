@@ -1,7 +1,7 @@
 {
-  "ref": "web-v0.2.0",
-  "commit": "0ae92d5d22610ab9907a285c21d0b3a8679c8a0b",
-  "built_at": "2026-10-15T08:23:28Z",
-  "wasm_sha256": "5f04a7bbc8b94a97887d356ce50cc8b14067f3b6cc23ac299ba06dffea48d11c",
-  "bytes": 1910097
+  "ref": "web-v0.3.0",
+  "commit": "9700440fb13c27e2eb577e5deb5e64d3527b88c4",
+  "built_at": "2026-11-14T14:12:31Z",
+  "wasm_sha256": "8ce90fc04d4cc3df7712edcd86b2eddc23baacd6645d54877ba8a309d5dc41f7",
+  "bytes": 2382534
 }
